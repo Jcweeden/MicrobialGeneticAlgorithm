@@ -29,11 +29,12 @@ void GameObject::physicsIntegration()
   //ensure has mass
   if (inverseMass <= 0.0f)
   {
-    std::cout << "GameObject.cpp.Integration() - inverseMass below 0\n";
+    //std::cout << "GameObject.cpp.Integration() - inverseMass below 0\n";
     return;
   }
     
-  float duration = TheGame::Instance()->getFrameTime()* 0.00000001f;
+  float duration = (float)TheGame::Instance()->getFrameTime() * (float)0.01f;
+  //std::cout << duration << "\n";
   if (duration <= 0.0)
   {
     //std::cout << "ShapeBody.cpp.Integration() - duration below 0\n";
@@ -80,4 +81,23 @@ void GameObject::addForce(const Vector2D &force)
 void GameObject::clearAccumForces()
 {
   forceAccumulated.clear();
+}
+
+bool GameObject::checkForCollisionWithCircle(GameObject* obj)
+{
+  //sqrt(sqr(x)+sqr(y))
+  
+  float dx = obj->getPositionX() - position.getX();
+  float dy = obj->getPositionY() - position.getY();
+  float radii = obj->getWidth() + getWidth();
+
+  //if distance between origins of 2 circles is smaller than their combined radii 
+  if ( ( dx * dx )  + ( dy * dy ) < radii * radii )   {
+    //the circles are colliding
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

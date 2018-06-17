@@ -65,7 +65,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    std::cout << "Game: Init success\n";
    m_bRunning = true;//start the main loop
 
-   windowWidth = 400;
+   windowWidth = 600;
    windowHeight = 600;
    borderWidth = 10;
    UIHeight = 70;
@@ -74,7 +74,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(10,10);
+   env->setup(15,30);
    /*
    initText();
    loadSounds();

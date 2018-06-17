@@ -13,7 +13,11 @@ class GameObject;
 
 class FoodSource : public GameObject {
 public:
+  //the default radius of a foodSource, that it will be spawned and respawned to be at
+  float startingRadius;
 
+  //the amount of radi
+  float remainingRadiusToGrow;
 
 public:
 
@@ -23,6 +27,11 @@ public:
   void draw();
   void update();
   void clean();
+
+  void consumedByMicrobe();
+  void respawn();
+
+
 };
 
 #endif

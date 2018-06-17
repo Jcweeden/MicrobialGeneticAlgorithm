@@ -47,9 +47,11 @@ public:
   //removes all forces accumulated in a frame
   void clearAccumForces();
 
+  bool checkForCollisionWithCircle(GameObject* obj);
+
 public:
-  int width;
-  int height;
+  float width;
+  float height;
 
   Vector2D position;
   Vector2D velocity;

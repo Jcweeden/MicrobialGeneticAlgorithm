@@ -18,7 +18,7 @@ public:
   //number of food that must be eaten before reproducing
   static const unsigned foodRequiredToMate = 100;
 
-  float speed;
+  float speedMultiplier;
   
   unsigned foodEaten;
 
@@ -35,9 +35,9 @@ public:
   void moveTowards(const Vector2D target);
   int locateNearestFoodSource();
   void findNearestReproductivePartner();
+  void consumedFoodSource();
 
-
-  void setSpeed(float p_speed) { speed = p_speed;}
+  void setSpeedMultiplier(float p_speed) { speedMultiplier = p_speed;}
 };
 
 #endif

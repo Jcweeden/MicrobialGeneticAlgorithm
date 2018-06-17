@@ -54,16 +54,23 @@ void Environment::setup(int microbeCount, int foodSourceCount)
 {
   //Microbe::foodRequiredToMate = 100;
 
+  float defaultDampingVal = 0.6f;
+  
   //init microbes
   for (size_t i = 0; i < microbeCount; i++)
   {
     Microbe *microbe = new Microbe();
 
+    //rand val between -defaultDampingVal/5 and defaultDampingVal/5 - added to defaultDampingVal to give variation in movement
+    float dampingVariation =  -(defaultDampingVal/10) + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/((defaultDampingVal/10)-(-(defaultDampingVal/10)))));
+
+
+        
     microbe->setVelocity(0,0);
     microbe->setMass(1.0f);
-    microbe->setDamping(0.9f);
+    microbe->setDamping(0.9f + dampingVariation);
     microbe->setAcceleration(0.0f, 0.0f); //no gravity
-    microbe->clearAccumForces();
+    //microbe->clearAccumForces();
 
     microbes.push_back(microbe);
   }

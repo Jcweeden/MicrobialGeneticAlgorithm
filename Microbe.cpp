@@ -5,8 +5,8 @@
 
 Microbe::Microbe() :
     GameObject(
-        rand() % TheGame::Instance()->getWindowWidth() + 15,//x
-        rand() % TheGame::Instance()->getWindowHeight() + 15,//y
+        rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,//x
+        rand() % (TheGame::Instance()->getWindowHeight()-30) + 15,//y
         15,//width
         15,//height
         rand() % 225 + 30,//r
@@ -14,7 +14,7 @@ Microbe::Microbe() :
         rand() % 225 + 30,//b
         rand() % 160 + 40//rand() % 255 //a
                ),
-    foodEaten(0), dying(false)
+    foodEaten(0), dying(false), speedMultiplier(1.0f)
 {
   //set acceleration
 }
@@ -37,7 +37,7 @@ void Microbe::draw()
 
 void Microbe::update()
 {
-  std::cout << "updating \n";
+  //std::cout << "updating \n";
   //if has eaten enough food to reproduce
   if (foodEaten >= foodRequiredToMate)
   {
@@ -56,10 +56,23 @@ void Microbe::update()
   {
     //locate nearest food source
     int nearestFoodSource = locateNearestFoodSource();
-    std::cout << nearestFoodSource << "\n";
-    if (nearestFoodSource != -1) //if there is an available foodsource
+    //std::cout << nearestFoodSource << "\n";
+    if (nearestFoodSource != -1) //if there is an available foodSource
     {
+      //continue to move towards the nearest foodSource
       moveTowards(TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
+      
+      //and if in contact and eating this food source,
+      if (GameObject::checkForCollisionWithCircle(
+              TheEnvironment::Instance()->foodSources[nearestFoodSource]))
+      {
+        //run appropriate code to reduce size of food source
+        TheEnvironment::Instance()->foodSources[nearestFoodSource]->consumedByMicrobe();
+        //and increase size and consumuption counter for microbe
+        consumedFoodSource();
+      }
+      
+     
     }
     else //no food sources
     {
@@ -89,10 +102,10 @@ void Microbe::moveTowards(Vector2D target)
   dirToMove.setY(dirToMove.getY() / hyp);
 
 
-  std::cout << "x: " << dirToMove.getX() <<
-      "y: " << dirToMove.getY() << "\n";
+  //std::cout << "x: " << dirToMove.getX() <<
+  //  "y: " << dirToMove.getY() << "\n";
   
-  acceleration = dirToMove * 1.0f;
+  acceleration = dirToMove * (speedMultiplier / 100);
   //acceleration = dirToMove * 0.0003f;
   
 
@@ -157,4 +170,24 @@ int Microbe::locateNearestFoodSource()
 void Microbe::findNearestReproductivePartner()
 {
   //check each microbe to see if they are ready to reproduce 
+}
+
+
+void Microbe::consumedFoodSource()
+{
+  //increase size of microbe
+  GameObject::width += 0.005f;
+
+  //decrease speed of microbe
+  if (speedMultiplier > 0.2f)
+  {
+    speedMultiplier -= (speedMultiplier/50);
+  }
+
+  //increase mass of microbe
+  
+  //add value to total food consumption towards next reproduction
+
+  //increase child draw size
+  
 }
