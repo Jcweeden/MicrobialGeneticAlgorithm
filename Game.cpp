@@ -74,7 +74,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(15,30);
+   env->setup(15,35);
    /*
    initText();
    loadSounds();
@@ -158,23 +158,26 @@ void Game::loadObjects()
 
 void Game::render()
 {
-  SDL_SetRenderDrawColor(m_pRenderer, 210, 81, 88, 0xFF); 
+
+  /*SDL_Surface* surface = SDL_CreateRGBSurface(0, 200, 200, 32,
+                                              0xff000000, 
+                                              0x00ff0000, 
+                                              0x0000ff00, 
+                                              0x000000ff); 
+  */
+  
+  SDL_SetRenderDrawColor(m_pRenderer, 210, 81, 88, 0xFF);
+  //SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
+
   SDL_SetRenderDrawBlendMode(m_pRenderer, SDL_BLENDMODE_NONE);
   SDL_RenderClear(m_pRenderer); // clear the renderer to the draw colour
 
   env->draw();
 
+  //SDL_SetColorKey(surface, SDL_TRUE, 0xffff00ff);
+
   SDL_RenderPresent(m_pRenderer);  //draw to the screen
 
-  /*
-  //draw background
-  for(size_t i = 0; i < m_gameObjects.size(); i++)
-  {
-    m_gameObjects[i]->draw();
-  }
-  */
-  //draw game / menu
-  // m_pGameStateManager->render();
 
 }
 
@@ -206,7 +209,7 @@ void Game::clean() {
   SDL_DestroyTexture(highScoreText);
   TTF_Quit();
   */
-
+  env->clean();
   delete env;
   
   SDL_DestroyWindow (m_pWindow);

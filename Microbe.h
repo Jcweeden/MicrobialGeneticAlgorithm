@@ -15,15 +15,24 @@ class GameObject;
 class Microbe : public GameObject {
 public:
 
-  //number of food that must be eaten before reproducing
-  static const unsigned foodRequiredToMate = 100;
-
+  //starts at 1 and is decremented as the microbe increases in size and gets slower
   float speedMultiplier;
-  
-  unsigned foodEaten;
 
+  //number of food consumed at this point in time - reset to 0 upon reproducing
+  unsigned foodEaten;
+  //number of food that must be eaten before reproducing
+  const unsigned foodRequiredToMate = 500;
+
+  //if the weaker partner during reproduction then 
   bool dying;
+
+  float startingRadius;
   
+  float childRadius;
+  //amount to increase by per food = (startingRadius/foodRequiredToMate)
+
+  //the remaining size the microbe has to shrink by
+  float radiusToShrinkBy;
 public:
 
   Microbe(); //const
@@ -34,10 +43,17 @@ public:
 
   void moveTowards(const Vector2D target);
   int locateNearestFoodSource();
-  void findNearestReproductivePartner();
+  int locateNearestReproductivePartner();
   void consumedFoodSource();
 
+  void produceChild();
+  void completedReproduction();
+  void deathFromReproduction();
+  
   void setSpeedMultiplier(float p_speed) { speedMultiplier = p_speed;}
+
+  //if not dying, and has consumed enough food to reproduce then return true
+  bool isReadyToReproduce();
 };
 
 #endif

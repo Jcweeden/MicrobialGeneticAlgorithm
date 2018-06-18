@@ -68,7 +68,7 @@ void Environment::setup(int microbeCount, int foodSourceCount)
         
     microbe->setVelocity(0,0);
     microbe->setMass(1.0f);
-    microbe->setDamping(0.9f + dampingVariation);
+    microbe->setDamping(0.6f + dampingVariation);
     microbe->setAcceleration(0.0f, 0.0f); //no gravity
     //microbe->clearAccumForces();
 
@@ -108,23 +108,47 @@ void Environment::draw()
 
 void Environment::update()
 {
-  //std::cout << "foodSources: " << foodSources.size() << "\n";
+  std::cout << "microbes: " << microbes.size() << "\n";
 
   for (size_t i = 0; i < foodSources.size(); i++)
   {
     foodSources[i]->update();
   }
+
+  std::vector<unsigned> toDelete;
   
-  for (size_t i = 0; i < microbes.size(); i++)
+  for (unsigned i = 0; i < microbes.size(); i++)
   {
     microbes[i]->update();
-  }
 
+    if (microbes[i]->width < 0)
+    {
+      toDelete.push_back(i);
+    }
+  }
+  if (toDelete.size() > 0 )
+  {
+    for (size_t i = 0; i < toDelete.size(); i++)
+    {
+      delete microbes[toDelete[i]];
+      microbes.erase(microbes.begin() + toDelete[i]);
+    }
+  }
 }
 
 void Environment::clean()
 {
-  
+  for (Microbe *microbe: microbes)
+  {
+    //delete from microbes
+    delete microbe;
+  }
+
+  for (FoodSource *food: foodSources)
+  {
+    //delete from microbes
+    delete food;
+  } 
 }
 
 

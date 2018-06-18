@@ -8,7 +8,7 @@ FoodSource::FoodSource() :
         rand() % (TheGame::Instance()->getWindowWidth()-30) +15,//x
         rand() % (TheGame::Instance()->getWindowHeight()-30) +15,//y
         startingRadius,//width
-        0,//height
+        0,//height (not used)
         rand() % 255,//r
         rand() % 255,//g
         rand() % 255,//b
@@ -20,8 +20,8 @@ FoodSource::FoodSource() :
 
 void FoodSource::draw()
 {
-  filledCircleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), width, 0, 0, 0, colourA);
-  filledCircleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), width-1, colourR, colourG, colourB, colourA);
+  filledCircleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), width, colourR, colourG, colourB, colourA);
+  circleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), width, 0, 0, 0, 255);
 
 }
 
@@ -43,10 +43,10 @@ void FoodSource::clean()
 void FoodSource::consumedByMicrobe()
 {
   //reduce the size of the foodSource
-  GameObject::width -= 0.05f;
+  GameObject::width -= 0.1f;
 
   //if the foodSource has been entirely consumed
-  if (GameObject::width <= 0.3f)
+  if (GameObject::width <= 0.2f)
   {
     respawn();
   }

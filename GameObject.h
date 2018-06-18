@@ -16,6 +16,7 @@ public:
 
   GameObject(int x, int y, int p_width, int p_height, Uint8 p_colourR, Uint8 p_colourG, Uint8 p_colourB, Uint8 p_colourA);
 
+  virtual ~GameObject() {}
   
   virtual void draw();
   virtual void update();
@@ -25,7 +26,8 @@ public:
   Vector2D& getPosition() {return position; }  
   int getPositionX() {return position.getX(); }
   int getPositionY() {return position.getY(); }
-  
+  int setPosition(Vector2D p_position) {position = p_position; }
+
   int getWidth() { return width; }
   int getHeight() { return height; }
   void setWidth(int val) { width = val; }
