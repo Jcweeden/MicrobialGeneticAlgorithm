@@ -74,7 +74,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(15,35);
+   env->setup(1,1,10, getWindowHeight(), getWindowWidth(), 20);
    /*
    initText();
    loadSounds();
@@ -158,27 +158,13 @@ void Game::loadObjects()
 
 void Game::render()
 {
-
-  /*SDL_Surface* surface = SDL_CreateRGBSurface(0, 200, 200, 32,
-                                              0xff000000, 
-                                              0x00ff0000, 
-                                              0x0000ff00, 
-                                              0x000000ff); 
-  */
-  
   SDL_SetRenderDrawColor(m_pRenderer, 210, 81, 88, 0xFF);
-  //SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
 
-  SDL_SetRenderDrawBlendMode(m_pRenderer, SDL_BLENDMODE_NONE);
   SDL_RenderClear(m_pRenderer); // clear the renderer to the draw colour
 
   env->draw();
 
-  //SDL_SetColorKey(surface, SDL_TRUE, 0xffff00ff);
-
   SDL_RenderPresent(m_pRenderer);  //draw to the screen
-
-
 }
 
 void Game::update() {
@@ -210,7 +196,7 @@ void Game::clean() {
   TTF_Quit();
   */
   env->clean();
-  delete env;
+  delete TheEnvironment::Instance();
   
   SDL_DestroyWindow (m_pWindow);
   SDL_DestroyRenderer (m_pRenderer);

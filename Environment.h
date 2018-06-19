@@ -7,6 +7,8 @@
 //#include "GameObject.h"
 #include "Microbe.h"
 #include "FoodSource.h"
+#include "Obstacle.h"
+#include "Grid.h"
 
 #include <iostream>
 #include <string>
@@ -14,6 +16,8 @@
 
 class Microbe;
 class FoodSource;
+class Obstacle;
+//class Grid;
 
 class Environment {
 
@@ -28,15 +32,20 @@ public:
   //vector containing all active agents
   std::vector<Microbe*> microbes;
 
-
+  //vector containing all obstacles in the environment
+  std::vector<Obstacle*> obstacles;
+  
+  //grid that holds the terrain for A* traversal of microbes
+  Grid grid;
+  
 public:
   //create singleton instance
   static Environment* Instance();
 
   Environment();
-  Environment(int microbeCount, int foodSourceCount); //const
 
-  void setup(int microbeCount, int foodSourceCount);
+  void setup(unsigned microbeCount, unsigned foodSourceCount, unsigned obstaclesCount,
+             unsigned gridSizeX, unsigned gridSizeY, unsigned nodeDiameter);
   
   void draw();
 
