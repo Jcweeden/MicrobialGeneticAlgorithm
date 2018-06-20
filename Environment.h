@@ -9,6 +9,7 @@
 #include "FoodSource.h"
 #include "Obstacle.h"
 #include "Grid.h"
+#include "PathFinder.h"
 
 #include <iostream>
 #include <string>
@@ -37,6 +38,9 @@ public:
   
   //grid that holds the terrain for A* traversal of microbes
   Grid grid;
+
+  //
+  PathFinder pathFinder;
   
 public:
   //create singleton instance

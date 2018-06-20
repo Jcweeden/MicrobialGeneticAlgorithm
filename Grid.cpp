@@ -27,6 +27,7 @@ Grid::Grid(unsigned p_gridSizeX, unsigned p_gridSizeY, float p_nodeDiameter)
 
 void Grid::setupGrid()
 {
+  
   //traverse across each row setting values
   for (size_t y = 0; y < nodeCountY; y++)
   {
@@ -37,7 +38,7 @@ void Grid::setupGrid()
       //check box against list of obstacles
 
       //create new node with this variables
-      Node* node = new Node(Vector2D(nodeDiameter * x, nodeDiameter * y), nodeDiameter, nodeDiameter, traversable);
+      Node* node = new Node(Vector2D(nodeDiameter * x, nodeDiameter * y), x, y, nodeDiameter, nodeDiameter, traversable);
 
       //store in vector of nodes
       grid[x][y] = node;
@@ -50,6 +51,7 @@ void Grid::setupGrid()
   setObstacleNodesToUntraversable();
   
   std::cout << "successfully before setting obstacle nodes to intraversable, completed filling grid\n";
+  
 }
 
 void Grid::setObstacleNodesToUntraversable()
@@ -108,12 +110,14 @@ void Grid::setObstacleNodesToUntraversable()
       }
     }
   }
+  
+  std::cout << "successfully set obstacle nodes to intraversable\n";
 }
 
 
 void Grid::drawGrid()
 {
-
+  
   //Draw whether each node is traversable or not
   for (size_t y = 0; y < nodeCountY; y++)
   {
@@ -135,6 +139,18 @@ void Grid::drawGrid()
                  255, 0, 0, 255);
       }
     }
+
+    
+    //draw pathway in some colour
+    
+    for (size_t i = 0; i < pathway.size(); i++ )
+    {
+      boxRGBA (TheGame::Instance()->getRenderer(),
+               pathway[i]->position.getX(), pathway[i]->position.getY(),
+               pathway[i]->position.getX() + nodeDiameter, pathway[i]->position.getY() + nodeDiameter,
+               125, 125, 0, 255);
+    }
+    
 
     //draw the node the selected object is in (if one is selected)
     if (selectedObjectPosition.getX() >= 0 && selectedObjectPosition.getX() <= gridSize.getX() &&
@@ -164,6 +180,7 @@ void Grid::drawGrid()
                  0, 0, 0, 255);
     }
   }
+  
 }
 
 
@@ -193,7 +210,7 @@ Node* Grid::getNodeFromCoords(Vector2D worldPosition)
     int x = nodeCountX * percentageX;
     int y = nodeCountY * percentageY;
 
-    //std::cout << "node is at: x:" << x << " y:" << y << "\n";
+    //std::cout << "Grid:getNodeFromCoords() - node is at: x:" << x << " y:" << y << "\n";
     //return the node at this location
     return grid[x][y];
   }
@@ -203,3 +220,40 @@ Node* Grid::getNodeFromCoords(Vector2D worldPosition)
   }
 
 }
+
+
+
+//given the passed in node, any existing nodes in the nine surrounding grids are added to neighbours and returned.
+std::vector<Node*> Grid::getNeighbouringNodes(Node* node)
+{
+  //vector will contain all existing nodes neighbouring parameter node
+  std::vector<Node*> neighbours;
+
+  //for the node, before, including and after in the x axis
+  for (int x = -1; x <= 1; x++)
+  {
+    //for the node, before, including and after in the y axis
+    for (int y = -1; y <= 1; y++)
+    {
+      //if the node is the central of the nine (the node passed in), skip this iteration
+      if (x == 0 && y == 0) continue;
+
+      //calculate the neighbour's coords
+      int neighbourX = node->gridXIndex + x;
+      int neighbourY = node->gridYIndex + y;
+      
+      //if the node is within the limits of the grid
+      if (neighbourX >= 0 && neighbourX <= (int)nodeCountX-1 &&
+          neighbourY >= 0 && neighbourY <= (int)nodeCountY-1)
+      {
+        //add to neighbours
+        neighbours.push_back(grid[neighbourX][neighbourY]);
+      } 
+    }
+  }
+  
+  //return the list of existing neighbouring nodes
+  return neighbours;
+}
+
+

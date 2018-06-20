@@ -6,16 +6,21 @@
 
 #include <vector>
 
+//class Node;
+
 class Node {
 
 public:
-  //the top left posiiton of the node
+  //the top left position of the node
   Vector2D position;
 
-  //the X length of the node
-  unsigned gridX;
-  //the Y length of the node
-  unsigned gridY;
+  //the index of the node in the Grid grid vector
+  unsigned gridXIndex, gridYIndex;
+  
+  //the X width of the node
+  unsigned gridWidth;
+  //the Y height of the node
+  unsigned gridHeight;
   
   //true if the node is not an obstactle, and is walkable
   bool traversable;
@@ -24,10 +29,13 @@ public:
 
   int hCost;
 
+  //used when retracing back through the search path
+  Vector2D parent;
+
 public:
 
   //constructor
-  Node(Vector2D p_position, unsigned p_gridX, unsigned p_gridY, bool p_traversable);
+  Node(Vector2D p_position, unsigned p_gridXIndex, unsigned p_gridYIndex, unsigned p_gridWidth, unsigned p_gridHeight, bool p_traversable);
 
   Node();
   

@@ -101,3 +101,10 @@ bool GameObject::checkForCollisionWithCircle(GameObject* obj)
     return false;
   }
 }
+
+void GameObject::setNewRandomisedPosition()
+{
+  setPosition(Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15, //x
+                       rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));//y
+} 
+

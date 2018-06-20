@@ -33,6 +33,10 @@ public:
   //the coordinates of the selected microbe to track the movement of
   Vector2D selectedObjectPosition;
 
+  //holds the current set of Nodes that form the path of the selected Microbe
+  std::vector<Node*> pathway;
+
+  
 public:
 
   Grid();
@@ -47,6 +51,8 @@ public:
   Node* getNodeFromCoords(Vector2D worldPosition);
 
   void setObstacleNodesToUntraversable();
+
+  std::vector<Node*> getNeighbouringNodes(Node* node);
 
 };
 
