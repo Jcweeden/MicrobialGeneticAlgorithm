@@ -54,8 +54,10 @@ void FoodSource::consumedByMicrobe()
 
 void FoodSource::respawn()
 {
-  position.setX(rand() % (TheGame::Instance()->getWindowWidth()-30) +15);//x
-  position.setY(rand() % (TheGame::Instance()->getWindowHeight()-30) +15);//y
+  //set a new randomised position, checking
+  do {
+    setNewRandomisedPosition();
+  } while(!(TheEnvironment::Instance()->grid.getNodeFromCoords(position)->traversable));
 
   //set the width to 0, and reset the remainingRadiusToGrow so the fod will grow to its default size
   width = 0;//width
@@ -64,4 +66,4 @@ void FoodSource::respawn()
   colourR = rand() % 255;//r
   colourG = rand() % 255;//g
   colourB = rand() % 255;//b
-      }
+}

@@ -16,6 +16,11 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
   Node* startPositionNode = grid->getNodeFromCoords(startingPosition);
   Node* targetPositionNode = grid->getNodeFromCoords(targetPosition);
 
+  if (!startPositionNode)
+  {
+    return;
+  }
+  
   std::list<Node*> openSet;
   std::vector<Node*> closedSet;
   //add first node to end of list of openedNodes
@@ -66,11 +71,10 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
         neighbour->hCost = calcManhattanDistance(neighbour,targetPositionNode);
         neighbour->parent = Vector2D(node->gridXIndex,node->gridYIndex);
 
-        if (found == false /*!openSet.contains(neighbour)*/)
+        // if (found == false /*!openSet.contains(neighbour)*/)
           openSet.push_back(neighbour);
       }
     }
-
   }
 }
 
@@ -85,8 +89,8 @@ void PathFinder::retracePath(Node* start, Node* end)
     currentNode = grid->grid[currentNode->parent.getX()][currentNode->parent.getY()];
   }
 
-  std::cout << "path size: " << path.size() << "\n";
-  grid->pathway = path;
+  //std::cout << "path size: " << path.size() << "\n";
+  pathway = path;
 }
 
 //calculate the distance between two nodes in the grid strictly using only horizontal and/or vertical movements in

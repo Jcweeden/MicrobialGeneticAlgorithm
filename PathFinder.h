@@ -17,6 +17,8 @@ public:
 
   Grid* grid;
 
+  //holds the current set of Nodes that form the path of the selected Microbe
+  std::vector<Node*> pathway;
 
 public:
 

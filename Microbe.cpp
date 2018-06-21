@@ -13,7 +13,7 @@ Microbe::Microbe() :
         rand() % 225 + 30,//b
         rand() % 160 + 40 //a
                ),
-    foodEaten(0), dying(false), speedMultiplier(1.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f)
+    foodEaten(0), dying(false), speedMultiplier(10.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f)
 {
 }
 
@@ -76,12 +76,13 @@ void Microbe::update()
       }
     }
     else //no available partners
-    {
+    {    //go to random location
       //std::cout << "no available partner\n";
-      //go to random location
-      moveTowards(
-          Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
-                   rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));
+      //determine path to random location
+      pathFinder.findPath(position,  Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
+                                              rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));
+      //move on path towards random location //USING A*
+      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
     }
   }
   //else not eaten enough food, or no current partner available, instead look for nearest food source
@@ -89,11 +90,17 @@ void Microbe::update()
   {
     //locate nearest food source
     int nearestFoodSource = locateNearestFoodSource();
-    //std::cout << nearestFoodSource << "\n";
+    
     if (nearestFoodSource != -1) //if there is an available foodSource
     {
-      //continue to move towards the nearest foodSource
-      moveTowards(TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
+      //determine path to nearest foodSource
+      pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
+
+      //continue to move towards the nearest foodSource //USING A*
+      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+
+      //continue to move towards the nearest foodSource //IN STRAIGHT LINE
+      //moveTowards(TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
       
       //and if in contact and eating this food source,
       if (GameObject::checkForCollisionWithCircle(
@@ -104,23 +111,29 @@ void Microbe::update()
         //and increase size and consumuption counter for microbe
         consumedFoodSource();
       }
-      
-     
     }
     else //no food sources
-    {
-      //go to random location
-      moveTowards(
+    { //go to random location
+
+      //determine path to random location
+      pathFinder.findPath(position,  Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
+                                              rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));
+      //move on path towards random location //USING A*
+      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      
+      /*moveTowards(
           Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
-                   rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));
+          rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));*/
     }
   }
   else //dying - randomly move about whilst shrinking
   {
     //std::cout << "dying\n";
-    moveTowards(
-        Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
-                 rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));
+    //determine path to random location
+    pathFinder.findPath(position,  Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
+                                            rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));
+    //move on path towards random location //USING A*
+    moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
   }
 
   GameObject::update();
@@ -160,6 +173,43 @@ void Microbe::moveTowards(Vector2D target)
   acceleration = distance * 0.001f;
   */
 }
+
+
+void Microbe::moveTowardsNextPathNode(Vector2D target)
+{
+  
+  //distance between microbe and target
+  Vector2D dirToMove = (target - position);
+
+  //magnitude
+  float hyp = dirToMove.magnitude();
+
+  dirToMove.setX(dirToMove.getX() / hyp);
+  dirToMove.setY(dirToMove.getY() / hyp);
+
+
+  //std::cout << "x: " << dirToMove.getX() <<
+  //  "y: " << dirToMove.getY() << "\n";
+  
+  acceleration = dirToMove * (speedMultiplier / 100);
+  //acceleration = dirToMove * 0.0003f;
+  
+
+  /*
+  //distance between microbe and target
+  Vector2D distance = target - position;
+  float distanceF = distance.magnitude();
+
+  // Vector2 direction = Vector2.Normalize(end - start);
+  distance.normalise();
+
+  
+  std::cout << "x: " << distance.getX() <<
+      "y: " << distance.getY() << "\n";
+  acceleration = distance * 0.001f;
+  */
+}
+
 
 
 void Microbe::clean()
@@ -336,6 +386,8 @@ void Microbe::produceChild()
   childMicrobe->colourB = colourB;
   childMicrobe->colourA = colourA;
 
+  childMicrobe->pathFinder.setGrid(&TheEnvironment::Instance()->grid);
+    
   //add to the list of microbes
   TheEnvironment::Instance()->microbes.push_back(childMicrobe);
 }

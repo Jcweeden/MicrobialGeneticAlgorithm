@@ -39,8 +39,7 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
   //init A* grid, runs setup and creates nodes in Grid constructor
   grid = Grid(gridSizeX, gridSizeY, nodeDiameter);
 
-  //set the pathfinder to use the initialised grid
-  pathFinder.setGrid(&grid);
+  //pathFinder.setGrid(&grid);
   std::cout << "Env.setup() init grid = Grid\n";
 
   
@@ -56,13 +55,17 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
       microbe->setNewRandomisedPosition();  //generate a new location
     } 
     
-    //rand val between -defaultDampingVal/5 and defaultDampingVal/5 - added to defaultDampingVal to give variation in movement
-    float dampingVariation =  -(defaultDampingVal/10) + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/((defaultDampingVal/10)-(-(defaultDampingVal/10)))));
+    //rand val between -defaultDampingVal/5 and defaultDampingVal/5 -
+    //added to defaultDampingVal to give variation in movement
+    float dampingVariation =  -(defaultDampingVal/10) + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/((defaultDampingVal/10)-(-(defaultDampingVal/10)))));
         
     microbe->setVelocity(0,0);
     microbe->setMass(1.0f);
     microbe->setDamping(0.6f + dampingVariation);
     microbe->setAcceleration(0.0f, 0.0f); //no gravity
+
+    //set the pathfinder to use the initialised grid
+    microbe->pathFinder.setGrid(&grid);
 
     microbes.push_back(microbe);
   }
@@ -95,7 +98,7 @@ void Environment::draw()
 {
   //std::cout << "Env.draw()\n";
   //if selected, pass in the location of the selcected microbe
-  grid.selectedObjectPosition = microbes[0]->position;
+  //grid.selectedObjectPosition = microbes[0]->position;
   
   //if enabled, draw the A* traversal grid
   grid.drawGrid();
@@ -140,6 +143,7 @@ void Environment::update()
       toDelete.push_back(i);
     }
   }
+  
   if (toDelete.size() > 0 )
   {
     for (size_t i = 0; i < toDelete.size(); i++)
@@ -149,8 +153,9 @@ void Environment::update()
     }
   }
 
-  pathFinder.findPath(microbes[0]->position, foodSources[0]->position);
-  // grid->pathway = PathFinder.pathway;
+  std::cout << "about to apply path\n";
+  grid.pathway = microbes[0]->pathFinder.pathway;
+  std::cout << "applied path\n";
 }
 
 void Environment::clean()

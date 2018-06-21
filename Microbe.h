@@ -3,10 +3,11 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h" 
-//#include "Vector2D.h"
 
 #include "GameObject.h"
 #include "Environment.h"
+#include "PathFinder.h"
+
 #include <iostream>
 #include <string>
 
@@ -33,6 +34,9 @@ public:
 
   //the remaining size the microbe has to shrink by
   float radiusToShrinkBy;
+
+  PathFinder pathFinder;
+
 public:
 
   Microbe(); //const
@@ -42,6 +46,8 @@ public:
   void clean();
 
   void moveTowards(const Vector2D target);
+  void moveTowardsNextPathNode(const Vector2D target);
+  
   int locateNearestFoodSource();
   int locateNearestReproductivePartner();
   void consumedFoodSource();

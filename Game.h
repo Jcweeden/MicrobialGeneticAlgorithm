@@ -33,7 +33,7 @@ public:
 
   void loadSounds();
   //void loadTextures();
-  void loadObjects();
+  //void loadObjects();
   //void initText();
   //bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
 

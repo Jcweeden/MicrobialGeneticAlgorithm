@@ -117,32 +117,33 @@ void Grid::setObstacleNodesToUntraversable()
 
 void Grid::drawGrid()
 {
-  
+  /*
   //Draw whether each node is traversable or not
   for (size_t y = 0; y < nodeCountY; y++)
   {
-    for (size_t x = 0; x < nodeCountX; x++)
-    {
-      //if traversable draw in green,
-      if (grid[x][y]->traversable)
-      {
-        boxRGBA (TheGame::Instance()->getRenderer(),
-                 grid[x][y]->position.getX(), grid[x][y]->position.getY(),
-                 grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
-                 0, 255, 0, 255);
-      }
-      else //is not travesable so draw in red
-      {
-        boxRGBA (TheGame::Instance()->getRenderer(),
-                 grid[x][y]->position.getX(), grid[x][y]->position.getY(),
-                 grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
-                 255, 0, 0, 255);
-      }
-    }
+  for (size_t x = 0; x < nodeCountX; x++)
+  {
+  //if traversable draw in green,
+  if (grid[x][y]->traversable)
+  {
+  boxRGBA (TheGame::Instance()->getRenderer(),
+  grid[x][y]->position.getX(), grid[x][y]->position.getY(),
+  grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
+  0, 255, 0, 255);
+  }
+  else //is not travesable so draw in red
+  {
+  boxRGBA (TheGame::Instance()->getRenderer(),
+  grid[x][y]->position.getX(), grid[x][y]->position.getY(),
+  grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
+  255, 0, 0, 255);
+  }
+  }
 
-    
-    //draw pathway in some colour
-    
+  */
+  //std::cout<< pathway.size() << "\n";
+  //draw pathway in some colour
+  if (pathway.size() > 0) {
     for (size_t i = 0; i < pathway.size(); i++ )
     {
       boxRGBA (TheGame::Instance()->getRenderer(),
@@ -150,37 +151,41 @@ void Grid::drawGrid()
                pathway[i]->position.getX() + nodeDiameter, pathway[i]->position.getY() + nodeDiameter,
                125, 125, 0, 255);
     }
+  }
     
 
-    //draw the node the selected object is in (if one is selected)
+  //draw the node the selected object is in (if one is selected)
+  if(pathway.size() > 0) {
     if (selectedObjectPosition.getX() >= 0 && selectedObjectPosition.getX() <= gridSize.getX() &&
         selectedObjectPosition.getY() >= 0 && selectedObjectPosition.getY() <= gridSize.getY() )
     {
       Node* node = getNodeFromCoords(selectedObjectPosition);
-       boxRGBA (TheGame::Instance()->getRenderer(),
-                 node->position.getX(), node->position.getY(),
-                 node->position.getX() + nodeDiameter, node->position.getY() + nodeDiameter,
-                 0, 0, 255, 255);
+      boxRGBA (TheGame::Instance()->getRenderer(),
+               node->position.getX(), node->position.getY(),
+               node->position.getX() + nodeDiameter, node->position.getY() + nodeDiameter,
+               0, 0, 255, 255);
       
-    }
-    
-    //draw black borders of the grid (if enabled)
-    for (size_t x = 0; x <= nodeCountX; x++)
-    {//draw vertical lines
-      vlineRGBA (TheGame::Instance()->getRenderer(),
-                 x * nodeDiameter, 0,
-                 gridSize.getY(),
-                 0, 0, 0, 255);
-    }
-    for (size_t y = 0; y <= nodeCountY; y++)
-    {//draw horizontal lines
-      hlineRGBA (TheGame::Instance()->getRenderer(),
-                 0, gridSize.getX(),
-                 y * nodeDiameter,
-                 0, 0, 0, 255);
     }
   }
   
+  /*
+  //draw black borders of the grid (if enabled)
+  for (size_t x = 0; x <= nodeCountX; x++)
+  {//draw vertical lines
+  vlineRGBA (TheGame::Instance()->getRenderer(),
+  x * nodeDiameter, 0,
+  gridSize.getY(),
+  0, 0, 0, 255);
+  }
+  for (size_t y = 0; y <= nodeCountY; y++)
+  {//draw horizontal lines
+  hlineRGBA (TheGame::Instance()->getRenderer(),
+  0, gridSize.getX(),
+  y * nodeDiameter,
+  0, 0, 0, 255);
+  }
+  }
+  */
 }
 
 
@@ -216,7 +221,7 @@ Node* Grid::getNodeFromCoords(Vector2D worldPosition)
   }
   else
   {
-    return grid[0][0];
+    return nullptr;
   }
 
 }

@@ -5,6 +5,8 @@
 #include "SDL2/SDL2_gfxPrimitives.h" 
 //#include "Vector2D.h"
 #include "GameObject.h"
+#include "Environment.h"
+
 
 #include <iostream>
 #include <string>

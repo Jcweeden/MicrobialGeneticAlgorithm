@@ -74,13 +74,11 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(1,1,10, getWindowHeight(), getWindowWidth(), 20);
+   env->setup(2,10,20, getWindowHeight(), getWindowWidth(), 20);
    std::cout << "Game.init() - env->setup() complete\n";
    /*
    initText();
    loadSounds();
-   loadTextures();
-   loadObjects();
    */
    
    //  m_pGameStateManager = new GameStateManager();
@@ -130,32 +128,11 @@ void Game::updateScore(std::string text)
 */
 
 
-/*
-void Game::updateHighScore(int score, std::string text)
-{
-  //std::cout << "new highscore: " << text << "\n";
-  if (score > highScore) {
-    highScore = score;
-    text.insert(0, "HIGH: ");
-    highScoreMessage = TTF_RenderText_Solid(fontTTF, text.c_str(), textColour);
-    highScoreText = SDL_CreateTextureFromSurface(m_pRenderer, highScoreMessage);
-  }
-  else
-  {
-    //score was not highest
-  }
-}
-
-*/
 void Game::loadSounds()
 {
   //TheSoundMixer::Instance()->load("assets/changeDirection.wav", "spaceBar", SOUND_SFX); 
 }
 
-void Game::loadObjects()
-{  
-
-}
 
 void Game::render()
 {

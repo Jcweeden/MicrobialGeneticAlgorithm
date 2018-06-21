@@ -4,8 +4,8 @@ Obstacle::Obstacle() :
     GameObject(
         rand() % (TheGame::Instance()->getWindowWidth()-30) + 15, //x
         rand() % (TheGame::Instance()->getWindowHeight()-30) + 15,//y
-        rand() % 40 + 10,//width
-        rand() % 40 + 10,    //height
+        rand() % 100 + 10,//width
+        rand() % 100 + 10,    //height
         20,//r
         20,//g
         20,//b
