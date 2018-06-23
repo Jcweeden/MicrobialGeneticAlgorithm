@@ -33,18 +33,20 @@ void Grid::setupGrid()
   {
     for (size_t x = 0; x < nodeCountX; x++)
     {
-      bool traversable = true;
+      //bool traversable = true;
       //check if there is an obstacle in this area that renders it intraversable
       //check box against list of obstacles
 
       //create new node with this variables
-      Node* node = new Node(Vector2D(nodeDiameter * x, nodeDiameter * y), x, y, nodeDiameter, nodeDiameter, traversable);
+      Node* node = new Node(Vector2D(nodeDiameter * x, nodeDiameter * y), x, y, nodeDiameter, nodeDiameter/*, traversable*/);
 
       //store in vector of nodes
       grid[x][y] = node;
     }
   }
 
+  resetGrid();
+  
   std::cout << "before setting obstacle nodes to intraversable\n";
   
   //determine which of these newly created nodes are in contact with an obstacle, and set traversable = false
@@ -117,30 +119,31 @@ void Grid::setObstacleNodesToUntraversable()
 
 void Grid::drawGrid()
 {
-  /*
+  
   //Draw whether each node is traversable or not
   for (size_t y = 0; y < nodeCountY; y++)
   {
-  for (size_t x = 0; x < nodeCountX; x++)
-  {
-  //if traversable draw in green,
-  if (grid[x][y]->traversable)
-  {
-  boxRGBA (TheGame::Instance()->getRenderer(),
-  grid[x][y]->position.getX(), grid[x][y]->position.getY(),
-  grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
-  0, 255, 0, 255);
-  }
-  else //is not travesable so draw in red
-  {
-  boxRGBA (TheGame::Instance()->getRenderer(),
-  grid[x][y]->position.getX(), grid[x][y]->position.getY(),
-  grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
-  255, 0, 0, 255);
-  }
+    for (size_t x = 0; x < nodeCountX; x++)
+    {
+      //if traversable draw in green,
+      if (grid[x][y]->traversable)
+      {
+        boxRGBA (TheGame::Instance()->getRenderer(),
+                 grid[x][y]->position.getX(), grid[x][y]->position.getY(),
+                 grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
+                 0, 255, 0, 255);
+      }
+      else //is not travesable so draw in red
+      {
+        boxRGBA (TheGame::Instance()->getRenderer(),
+                 grid[x][y]->position.getX(), grid[x][y]->position.getY(),
+                 grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
+                 255, 0, 0, 255);
+      }
+    }
   }
 
-  */
+  
   //std::cout<< pathway.size() << "\n";
   //draw pathway in some colour
   if (pathway.size() > 0) {
@@ -262,3 +265,19 @@ std::vector<Node*> Grid::getNeighbouringNodes(Node* node)
 }
 
 
+void Grid::resetGrid()
+{
+  for (size_t y = 0; y < nodeCountY; y++)
+  {
+    for (size_t x = 0; x < nodeCountX; x++)
+    {
+      grid[x][y]->gCost = 0;
+      grid[x][y]->hCost = 0;
+      grid[x][y]->heapIndex = 0;
+      grid[x][y]->parent = (Vector2D(0,0));
+      grid[x][y]->traversable = true;
+    }
+  }
+
+  pathway.clear();
+}

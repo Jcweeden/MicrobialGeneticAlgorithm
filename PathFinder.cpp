@@ -15,43 +15,48 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
 {
   Node* startPositionNode = grid->getNodeFromCoords(startingPosition);
   Node* targetPositionNode = grid->getNodeFromCoords(targetPosition);
-
-  if (!startPositionNode)
-  {
+  std::cout << "startingPosition: X: " << startingPosition.getX() <<
+      " Y: " << startingPosition.getY() << "\n";
+  std::cout << "targetPosition: X: " << targetPosition.getX() <<
+      " Y: " << targetPosition.getY() << "\n";  
+  //if the start position is null (e.g., getNodeFromCoords returns that the coords are not on the map
+  /*if (!startPositionNode)
+  { //then do not find a new path, return
     return;
-  }
+    }*/
+  //Heap heap;
   
-  std::list<Node*> openSet;
+  heap.setHeapSize(grid->nodeCountX*grid->nodeCountY); //std::list<Node*> openSet;
   std::vector<Node*> closedSet;
+
   //add first node to end of list of openedNodes
-  openSet.push_back(startPositionNode);
+  heap.addItem(startPositionNode);/*openSet*/ //heap.items.push_back(startPositionNode);
+  std::cout << "startPositionNode->gCost: " << startPositionNode->gCost << "\n";
+  std::cout << "startPositionNode->hCost: " << startPositionNode->hCost << "\n";
+  std::cout << "heap.getHeapSize(): " << heap.getHeapSize() << "\n";
+  std::cout << "closedSet.size(): " << closedSet.size() << "\n";
 
   //while there are still nodes to check
-  while (openSet.size() > 0)
+  while (/*openSet*/heap.getHeapSize() > 0)
   {
     //GET NODE IN OPEN SET WITH LOWEST fCost
-    Node* node = openSet.front();  //retrieve the first node for comparision
-    
-    //for each node in openSet (start at 1 to exclude node assigned in line above)
-    for (size_t i = 1; i < openSet.size(); i++) {
-      //if openSet[i] has lower or equal cost then the currentNode
-      if (openSet.front()->fCost() < node->fCost() || openSet.front()->fCost() == node->fCost())
-      {
-        //if have the same fCost then determine which is closest to target by comparing hCost
-        if (openSet.front()->hCost < node->hCost) node = openSet.front();
-      }
-    }
-    //remove currentNode from openSet and add to closedSet
-    openSet.remove(node);
+    Node* node = /*openSet.front()*/heap.removeFirstItem();  //retrieve the first node for comparision
+    // node->gCost = 0;
+    //node->hCost = 0;
     closedSet.push_back(node);
-
+    
     //IF IS THE TARGET NODE
     if (node == targetPositionNode)
     {
       //RETRACE
       retracePath(startPositionNode, targetPositionNode);
+      std::cout << "heap.size() upon completion of path: " << heap.getHeapSize() << "\n";
+      closedSet.clear();
+      heap.clean();
+      //grid->resetGrid();
+      return;
     }
-
+    
     //FOR EACH NEIGHTBOURING NODE
     for (Node* neighbour : grid->getNeighbouringNodes(node))
     {
@@ -63,16 +68,22 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
       //recalculate movement cost for already open neighbours
       int newMovementCostToNeighbour = node->gCost + calcManhattanDistance(node, neighbour);
 
-      bool found = (std::find(openSet.begin(), openSet.end(), neighbour) != openSet.end());
+      bool found = (std::find(/*openSet*/heap.items.begin(), /*openSet*/heap.items.end(), neighbour) != /*openSet*/heap.items.end());
 
-      if (newMovementCostToNeighbour < neighbour->gCost || found == false /*!openSet.contains(neighbour)*/)
+      if (newMovementCostToNeighbour < neighbour->gCost || /*!heap.isInHeap(neighbour) */found == false /*!openSet.contains(neighbour)*/)
       {
         neighbour->gCost = newMovementCostToNeighbour;
         neighbour->hCost = calcManhattanDistance(neighbour,targetPositionNode);
         neighbour->parent = Vector2D(node->gridXIndex,node->gridYIndex);
 
-        // if (found == false /*!openSet.contains(neighbour)*/)
-          openSet.push_back(neighbour);
+        bool found = (std::find(/*openSet*/heap.items.begin(), /*openSet*/heap.items.end(), neighbour) != /*openSet*/heap.items.end());
+        
+        if /*(!heap.isInHeap(neighbour) */ (found == false /*!openSet.contains(neighbour))*/)
+          /*openSet*//*heap.items.push_back*/heap.addItem(neighbour);
+        else
+        {
+          heap.updateItem(neighbour);
+        }
       }
     }
   }
@@ -101,6 +112,11 @@ int PathFinder::calcManhattanDistance(Node* nodeA, Node* nodeB)
   int distanceY = abs((int)nodeA->gridYIndex - (int)nodeB->gridYIndex);
 
   if (distanceX > distanceY) return 14 * distanceY + 10 * (distanceX-distanceY);
-  
+
   else return 14 * distanceX + 10 * (distanceY-distanceX);
+}
+
+void PathFinder::clean()
+{
+  pathway.clear();
 }

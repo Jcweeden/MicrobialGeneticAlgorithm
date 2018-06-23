@@ -50,6 +50,8 @@ public:
   
   int locateNearestFoodSource();
   int locateNearestReproductivePartner();
+  Vector2D generateRandomNearLocation();
+  
   void consumedFoodSource();
 
   void produceChild();

@@ -127,6 +127,9 @@ void Environment::update()
 {
   //std::cout << "microbes: " << microbes.size() << "\n";
 
+  //foodSources[0]->position = Vector2D(300,500);
+  //microbes[0]->position = Vector2D(100,100);
+  
   for (size_t i = 0; i < foodSources.size(); i++)
   {
     foodSources[i]->update();
@@ -136,6 +139,7 @@ void Environment::update()
   
   for (unsigned i = 0; i < microbes.size(); i++)
   {
+
     microbes[i]->update();
 
     if (microbes[i]->width < 0)
@@ -153,28 +157,29 @@ void Environment::update()
     }
   }
 
-  std::cout << "about to apply path\n";
+  //std::cout << "about to apply path\n";
   grid.pathway = microbes[0]->pathFinder.pathway;
-  std::cout << "applied path\n";
+  //std::cout << "applied path\n";
 }
 
 void Environment::clean()
 {
   for (Microbe *microbe: microbes)
   {
+    microbe->clean();
     //delete from microbes
     delete microbe;
   }
 
   for (FoodSource *food: foodSources)
   {
-    //delete from microbes
+    //delete from foodSources
     delete food;
   }
 
   for (Obstacle *obs: obstacles)
   {
-    //delete from microbes
+    //delete from obstacles
     delete obs;
   }  
 

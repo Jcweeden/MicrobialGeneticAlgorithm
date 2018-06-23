@@ -32,15 +32,19 @@ public:
   //used when retracing back through the search path
   Vector2D parent;
 
+  int heapIndex;
+
 public:
 
   //constructor
-  Node(Vector2D p_position, unsigned p_gridXIndex, unsigned p_gridYIndex, unsigned p_gridWidth, unsigned p_gridHeight, bool p_traversable);
+  Node(Vector2D p_position, unsigned p_gridXIndex, unsigned p_gridYIndex, unsigned p_gridWidth, unsigned p_gridHeight);
 
   Node();
 
   Vector2D getNodeCentralPosition() { return Vector2D(position.getX() + gridWidth/2,
                                                       position.getY() + gridHeight/2);}
+
+  int compareTo(Node* nodeToCompare);
   
   //return the total score for the node
   int fCost() {return gCost + hCost;}
