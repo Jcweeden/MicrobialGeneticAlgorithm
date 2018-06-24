@@ -121,6 +121,7 @@ void Grid::drawGrid()
 {
   
   //Draw whether each node is traversable or not
+  /*
   for (size_t y = 0; y < nodeCountY; y++)
   {
     for (size_t x = 0; x < nodeCountX; x++)
@@ -142,6 +143,7 @@ void Grid::drawGrid()
       }
     }
   }
+  */
 
   
   //std::cout<< pathway.size() << "\n";

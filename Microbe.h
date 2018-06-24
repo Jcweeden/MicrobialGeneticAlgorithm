@@ -46,7 +46,6 @@ public:
   void clean();
 
   void moveTowards(const Vector2D target);
-  void moveTowardsNextPathNode(const Vector2D target);
   
   int locateNearestFoodSource();
   int locateNearestReproductivePartner();

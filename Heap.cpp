@@ -18,7 +18,7 @@ void Heap::clean()
   
   items.clear();
   itemsCount = 0;
-  std::cout << "itemsSize afrer clear" << items.size() << "\n";
+  std::cout << "heap->itemsSize after clear: " << items.size() << "\n";
 }
 
 void Heap::addItem(Node* item)

@@ -158,7 +158,7 @@ void Environment::update()
   }
 
   //std::cout << "about to apply path\n";
-  grid.pathway = microbes[0]->pathFinder.pathway;
+  //grid.pathway = microbes[0]->pathFinder.pathway;
   //std::cout << "applied path\n";
 }
 

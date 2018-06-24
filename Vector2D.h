@@ -9,8 +9,8 @@ public:
   float getX() {return x;}
   float getY() {return y;}
   
-  float setX(float newX) {x = newX;}
-  float setY(float newY) {y = newY;}
+  void setX(float newX) {x = newX;}
+  void setY(float newY) {y = newY;}
 
   void clear()
   {

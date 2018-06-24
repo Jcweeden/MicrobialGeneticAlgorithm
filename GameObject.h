@@ -26,7 +26,7 @@ public:
   Vector2D& getPosition() {return position; }  
   int getPositionX() {return position.getX(); }
   int getPositionY() {return position.getY(); }
-  int setPosition(Vector2D p_position) {position = p_position; }
+  void setPosition(Vector2D p_position) {position = p_position; }
   virtual void setNewRandomisedPosition();
   
   int getWidth() { return width; }

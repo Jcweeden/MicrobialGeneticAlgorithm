@@ -62,8 +62,14 @@ void Microbe::update()
     {
       std::cout << "\nhas found reproductive partner - moving towards partner\n";
 
+      //determine path to nearest foodSource
+      pathFinder.findPath(position, TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
+
+      //continue to move towards the nearest foodSource //USING A*
+      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      
       //continue to move towards the nearest partner
-      moveTowards(TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
+      //moveTowards(TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
 
       //and if in contact with partner
       if (GameObject::checkForCollisionWithCircle(
@@ -77,7 +83,7 @@ void Microbe::update()
     }
     else //no available partners
     {    //go to random location
-      std::cout << "\no available partner - go to random location ";
+      std::cout << "\nno available partner - go to random location \n";
       pathFinder.findPath(position, generateRandomNearLocation());
       //move on path towards random location //USING A*
       moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
@@ -92,6 +98,7 @@ void Microbe::update()
     if (nearestFoodSource != -1) //if there is an available foodSource
     {
       std::cout << "\nfound food - moving towards food\n";
+
       
       //determine path to nearest foodSource
       pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
@@ -124,7 +131,7 @@ void Microbe::update()
     else //no food sources
     { //go to random location
       
-      std::cout << "\nno food found - moving towards random location\n";
+      std::cout << "\no food found - moving towards random location\n";
 
       //determine path to random location
       pathFinder.findPath(position, generateRandomNearLocation());
@@ -192,42 +199,6 @@ void Microbe::moveTowards(Vector2D target)
   */
 }
 
-
-void Microbe::moveTowardsNextPathNode(Vector2D target)
-{
-  
-  //distance between microbe and target
-  Vector2D dirToMove = (target - position);
-
-  //magnitude
-  float hyp = dirToMove.magnitude();
-
-  dirToMove.setX(dirToMove.getX() / hyp);
-  dirToMove.setY(dirToMove.getY() / hyp);
-
-
-  //std::cout << "x: " << dirToMove.getX() <<
-  //  "y: " << dirToMove.getY() << "\n";
-  
-  acceleration = dirToMove * (speedMultiplier / 100);
-  //acceleration = dirToMove * 0.0003f;
-  
-
-  /*
-  //distance between microbe and target
-  Vector2D distance = target - position;
-  float distanceF = distance.magnitude();
-
-  // Vector2 direction = Vector2.Normalize(end - start);
-  distance.normalise();
-
-  
-  std::cout << "x: " << distance.getX() <<
-      "y: " << distance.getY() << "\n";
-  acceleration = distance * 0.001f;
-  */
-}
-
 void Microbe::clean()
 {
   pathFinder.clean();
@@ -262,12 +233,12 @@ int Microbe::locateNearestFoodSource()
     }
     //return index of closest found foodsource
 
-    std::cout << "foodSources[nearestFoodSourceIndex].getX(): "
+    std::cout << "\nfoodSources[nearestFoodSourceIndex].getX(): "
               << TheEnvironment::Instance()->foodSources[nearestFoodSourceIndex]->position.getX();
     //<< "\n";
     std::cout << " Y(): "
               << TheEnvironment::Instance()->foodSources[nearestFoodSourceIndex]->position.getY()
-              << "\n";
+              << "";
     
     return nearestFoodSourceIndex;
   }
@@ -365,10 +336,8 @@ bool Microbe::isReadyToReproduce()
     {
       return true;
     }
-  } else
-  {
-    return false;
   } 
+    return false;
 }
 
 
@@ -390,7 +359,7 @@ void Microbe::deathFromReproduction()
 
 void Microbe::produceChild()
 {
-  Microbe* childMicrobe = new Microbe();
+  Microbe* childMicrobe = new Microbe(); //potential memory leak
 
   float defaultDampingVal = 0.6f;
 
@@ -430,12 +399,12 @@ Vector2D Microbe::generateRandomNearLocation()
   do {
     x = position.getX() + (rand() % (randSizeX*2) - randSizeX);
   }
-  while ( x > TheGame::Instance()->getWindowWidth() || x < 0); //do until within the boundaries
+  while ( x >= TheGame::Instance()->getWindowWidth() || x < 0); //do until within the boundaries
 
   do {
     y = position.getY() + (rand() % (randSizeX*2) - randSizeX);
   }
-  while ( y > TheGame::Instance()->getWindowHeight() || y < 0);
+  while ( y >= TheGame::Instance()->getWindowHeight() || y < 0);
 
   //return new random position
   return Vector2D(x,y);

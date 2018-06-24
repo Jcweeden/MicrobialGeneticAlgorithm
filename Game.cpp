@@ -74,7 +74,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(2,10,0, getWindowHeight(), getWindowWidth(), 20);
+   env->setup(2,20,0, getWindowHeight(), getWindowWidth(), 20);
    std::cout << "Game.init() - env->setup() complete\n";
    /*
    initText();

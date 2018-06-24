@@ -3,11 +3,11 @@ OBJS = main.cpp Game.cpp GameObject.cpp Circle.cpp InputHandler.cpp Environment.
 
 
 #CC specifies which compiler we're using
-CC = g++
+CC = g++ -std=c++11
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
-COMPILER_FLAGS = -w
+COMPILER_FLAGS = -g
 
 #LINKER_FLAGS specifies the libraries we're linking against 
 LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2_gfx

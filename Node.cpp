@@ -24,10 +24,10 @@ Node::Node()
 {}
 
 //compare fCosts of two nodes
+//if the two nodes fCosts are equal then the node with the node's hCost will be compared
 //returns -1 if node is higher, 1 if lower
 int Node::compareTo(Node* nodeToCompare)
 {
-  //int compare = 0;
   if (fCost() < nodeToCompare->fCost())
   {
     return 1;
@@ -38,15 +38,14 @@ int Node::compareTo(Node* nodeToCompare)
   } 
   else if (fCost() == nodeToCompare->fCost())
   {
-    if (hCost < nodeToCompare->hCost)   //DUBIOUS
+    if (hCost < nodeToCompare->hCost)
     {
       return 1;
     } else if (hCost > nodeToCompare->hCost)
     {
       return -1;
-    } else
-    {
-      return 0;
     }
   }
+
+  return 0; //else are equal for both fCost and hCost, return 0
 }
