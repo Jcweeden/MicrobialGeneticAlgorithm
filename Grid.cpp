@@ -46,6 +46,7 @@ void Grid::setupGrid()
   }
 
   resetGrid();
+  resetTraverable();
   
   std::cout << "before setting obstacle nodes to intraversable\n";
   
@@ -121,7 +122,7 @@ void Grid::drawGrid()
 {
   
   //Draw whether each node is traversable or not
-  /*
+  
   for (size_t y = 0; y < nodeCountY; y++)
   {
     for (size_t x = 0; x < nodeCountX; x++)
@@ -143,7 +144,7 @@ void Grid::drawGrid()
       }
     }
   }
-  */
+  
 
   
   //std::cout<< pathway.size() << "\n";
@@ -277,9 +278,19 @@ void Grid::resetGrid()
       grid[x][y]->hCost = 0;
       grid[x][y]->heapIndex = 0;
       grid[x][y]->parent = (Vector2D(0,0));
-      grid[x][y]->traversable = true;
     }
   }
 
   pathway.clear();
+}
+
+void Grid::resetTraverable()
+{
+  for (size_t y = 0; y < nodeCountY; y++)
+  {
+    for (size_t x = 0; x < nodeCountX; x++)
+    {
+      grid[x][y]->traversable = true;
+    }
+  }
 }

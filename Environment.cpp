@@ -132,6 +132,7 @@ void Environment::update()
   
   for (size_t i = 0; i < foodSources.size(); i++)
   {
+    //std::cout << "updating foodSource " << i << "/" << foodSources.size()-1 <<"\n";
     foodSources[i]->update();
   }
 
@@ -139,11 +140,13 @@ void Environment::update()
   
   for (unsigned i = 0; i < microbes.size(); i++)
   {
-
+    
+    //std::cout << "updating microbe " << i << "/" << microbes.size()-1 <<"\n";
     microbes[i]->update();
 
     if (microbes[i]->width < 0)
     {
+      //std::cout << "microbe " << i << "/" << microbes.size() <<" to be deleted\n";
       toDelete.push_back(i);
     }
   }
@@ -152,8 +155,10 @@ void Environment::update()
   {
     for (size_t i = 0; i < toDelete.size(); i++)
     {
+      //std::cout << "deleting microbe " << i << "/" << toDelete.size() <<"\n";
       delete microbes[toDelete[i]];
       microbes.erase(microbes.begin() + toDelete[i]);
+      //std::cout << "deleted microbe " << i << "/" << toDelete.size() <<"\n";
     }
   }
 

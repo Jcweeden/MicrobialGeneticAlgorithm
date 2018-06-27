@@ -13,7 +13,7 @@ Microbe::Microbe() :
         rand() % 225 + 30,//b
         rand() % 160 + 40 //a
                ),
-    foodEaten(0), dying(false), speedMultiplier(1.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f)
+    foodEaten(0), dying(false), speedMultiplier(10.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f), framesToNextPathfind(0)
 {
 }
 
@@ -33,6 +33,8 @@ void Microbe::draw()
 
 void Microbe::update()
 {
+  int resetVal = 2;
+  
   //if the shrinkage is due to reproduction
   if (radiusToShrinkBy > 0 )
   {
@@ -43,34 +45,42 @@ void Microbe::update()
 
     //else, shrinkage is due to death
     else {
-      width -=  startingRadius/200;
-      radiusToShrinkBy -= startingRadius/200;
+      width -=  startingRadius/100;
+      radiusToShrinkBy -= startingRadius/100;
 
       //when shrinkage of the microbe reaches the edges of the child, reduce the size
       //of the child with the microbe itself
       if (width < childRadius) childRadius = width;
     }
   }
-  
+
+  //if off the screen and not dying
+  if ((position.getX() < 0 || position.getX() > TheGame::Instance()->getWindowWidth() ||
+       position.getY() < 0 || position.getY() > TheGame::Instance()->getWindowHeight()) &&
+      !dying)
+  {
+    //find a path towards the center of the screen
+    moveTowards(Vector2D(TheGame::Instance()->getWindowWidth()/2,
+                         TheGame::Instance()->getWindowHeight()/2));
+  }
   //if has eaten enough food to reproduce
-  if (foodEaten >= foodRequiredToMate && !dying)
+  else if (foodEaten >= foodRequiredToMate && !dying)
   {
     //check if there is another partner to reproduce with
     int nearestPartnerIndex = locateNearestReproductivePartner();
 
     if (nearestPartnerIndex != -1) //if there is an available partner
     {
-      std::cout << "\nhas found reproductive partner - moving towards partner\n";
-
-      //determine path to nearest foodSource
-      pathFinder.findPath(position, TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
-
-      //continue to move towards the nearest foodSource //USING A*
-      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
-      
-      //continue to move towards the nearest partner
-      //moveTowards(TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
-
+      //determine path to nearest partner
+      if (framesToNextPathfind <= 0) {
+        pathFinder.findPath(position, TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
+        framesToNextPathfind = resetVal;
+      }
+      if (pathFinder.pathway.size() > 0) {
+        //continue to move towards the nearest partner //USING A*
+        moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      }
+            
       //and if in contact with partner
       if (GameObject::checkForCollisionWithCircle(
               TheEnvironment::Instance()->microbes[nearestPartnerIndex]))
@@ -83,13 +93,18 @@ void Microbe::update()
     }
     else //no available partners
     {    //go to random location
-      std::cout << "\nno available partner - go to random location \n";
-      pathFinder.findPath(position, generateRandomNearLocation());
-      //move on path towards random location //USING A*
-      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      if (framesToNextPathfind <= 0) {
+        pathFinder.findPath(position, generateRandomNearLocation());
+        framesToNextPathfind = resetVal;
+      }
+        
+      if (pathFinder.pathway.size() > 0) {
+        //move on path towards random location //USING A*
+        moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      }
     }
   }
-  //else not eaten enough food, or no current partner available, instead look for nearest food source
+  //else not eaten enough food, look for nearest food source
   else if (!dying/*not dying*/)  
   {
     //locate nearest food source
@@ -97,28 +112,19 @@ void Microbe::update()
     
     if (nearestFoodSource != -1) //if there is an available foodSource
     {
-      std::cout << "\nfound food - moving towards food\n";
 
-      
       //determine path to nearest foodSource
-      pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
-
-      //continue to move towards the nearest foodSource //USING A*
-      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
-      
-
-      /*
-      PathFinder pf;
-      pf.setGrid(&TheEnvironment::Instance()->grid);
-
-      pf.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
-      moveTowards(pf.pathway.front()->getNodeCentralPosition());
-      */
-      
-      //continue to move towards the nearest foodSource //IN STRAIGHT LINE
-      //moveTowards(TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
-      
-      //and if in contact and eating this food source,
+      if (framesToNextPathfind <= 0) {
+        pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
+        framesToNextPathfind = resetVal;
+      }
+        
+      if (pathFinder.pathway.size() > 0) {
+        //continue to move towards the nearest foodSource //USING Astar
+        moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      }
+            
+      //and if in contact with this food source,
       if (GameObject::checkForCollisionWithCircle(
               TheEnvironment::Instance()->foodSources[nearestFoodSource]))
       {
@@ -130,36 +136,39 @@ void Microbe::update()
     }
     else //no food sources
     { //go to random location
-      
-      std::cout << "\no food found - moving towards random location\n";
 
-      //determine path to random location
-      pathFinder.findPath(position, generateRandomNearLocation());
-           
-      //move on path towards random location //USING A*
-      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      if (framesToNextPathfind <= 0) {
+        pathFinder.findPath(position, generateRandomNearLocation());
+        framesToNextPathfind = resetVal;
+      }
+        
+      if (pathFinder.pathway.size() > 0) {
+        //move towards random location  //USING Astar
+        moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+      }
       
-      /*moveTowards(
-          Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15,
-          rand() % (TheGame::Instance()->getWindowHeight()-30) + 15));*/
     }
   }
   else //dying - randomly move about whilst shrinking
   {
-    //std::cout << "dying\n";
-    //determine path to random location
-    pathFinder.findPath(position, generateRandomNearLocation());
-    
-    //move on path towards random location //USING A*
-    moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+    if (framesToNextPathfind <= 0) {
+      pathFinder.findPath(position, generateRandomNearLocation());
+      framesToNextPathfind = resetVal;
+    }
+        
+    if (pathFinder.pathway.size() > 0) {
+      //move towards random location  //USING Astar
+      moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
+    }
   }
-
+  
+  framesToNextPathfind--;
+  
   GameObject::update();
 }
 
 void Microbe::moveTowards(Vector2D target)
 {
-  
   //distance between microbe and target
   Vector2D dirToMove = (target - position);
 
@@ -169,34 +178,7 @@ void Microbe::moveTowards(Vector2D target)
   dirToMove.setX(dirToMove.getX() / hyp);
   dirToMove.setY(dirToMove.getY() / hyp);
 
-
-  //std::cout << "x: " << dirToMove.getX() <<
-  //  "y: " << dirToMove.getY() << "\n";
-  
   acceleration = dirToMove * (speedMultiplier / 100);
-
-  /*
-  pathFinder = PathFinder();
-  pathFinder.setGrid(&TheEnvironment::Instance()->grid);
-  */
-
-
-  //acceleration = dirToMove * 0.0003f;
-  
-
-  /*
-  //distance between microbe and target
-  Vector2D distance = target - position;
-  float distanceF = distance.magnitude();
-
-  // Vector2 direction = Vector2.Normalize(end - start);
-  distance.normalise();
-
-  
-  std::cout << "x: " << distance.getX() <<
-      "y: " << distance.getY() << "\n";
-  acceleration = distance * 0.001f;
-  */
 }
 
 void Microbe::clean()
@@ -232,14 +214,6 @@ int Microbe::locateNearestFoodSource()
       }   
     }
     //return index of closest found foodsource
-
-    std::cout << "\nfoodSources[nearestFoodSourceIndex].getX(): "
-              << TheEnvironment::Instance()->foodSources[nearestFoodSourceIndex]->position.getX();
-    //<< "\n";
-    std::cout << " Y(): "
-              << TheEnvironment::Instance()->foodSources[nearestFoodSourceIndex]->position.getY()
-              << "";
-    
     return nearestFoodSourceIndex;
   }
   else //no foodSources found, return -1
@@ -264,21 +238,19 @@ int Microbe::locateNearestReproductivePartner()
       //if not looking at the current microbe searching for a partner
       if (TheEnvironment::Instance()->microbes[i] != this)
       {
-      //std::cout << "looping " << i << "\n";
+        //if ready to reproduce
+        if (TheEnvironment::Instance()->microbes[i]->isReadyToReproduce()){
+          //calculate the distance between the food source and microbe
+          float distance = position.calcDistance(TheEnvironment::Instance()->microbes[i]->position);
 
-      //if ready to reproduce
-      if (TheEnvironment::Instance()->microbes[i]->isReadyToReproduce()){
-        //calculate the distance between the food source and microbe
-        float distance = position.calcDistance(TheEnvironment::Instance()->microbes[i]->position);
-
-        //if the distance is less
-        if (distance < nearestPartnerDistance)
-        {
-          //save the index and distance
-          nearestPartnerDistance = distance;
-          nearestPartnerIndex = i; 
+          //if the distance is less
+          if (distance < nearestPartnerDistance)
+          {
+            //save the index and distance
+            nearestPartnerDistance = distance;
+            nearestPartnerIndex = i; 
+          }
         }
-      }
       }
     }
     //return index of closest found foodsource
@@ -337,7 +309,7 @@ bool Microbe::isReadyToReproduce()
       return true;
     }
   } 
-    return false;
+  return false;
 }
 
 

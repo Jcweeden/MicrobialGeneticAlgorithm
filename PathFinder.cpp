@@ -15,10 +15,10 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
 {
   Node* startPositionNode = grid->getNodeFromCoords(startingPosition);
   Node* targetPositionNode = grid->getNodeFromCoords(targetPosition);
-  std::cout << "startingPosition: X: " << startingPosition.getX() <<
-      " Y: " << startingPosition.getY() << "\n";
-  std::cout << "targetPosition: X: " << targetPosition.getX() <<
-      " Y: " << targetPosition.getY() << "\n";  
+  //std::cout << "startingPosition: X: " << startingPosition.getX() <<
+  //    " Y: " << startingPosition.getY() << "\n";
+      // std::cout << "targetPosition: X: " << targetPosition.getX() <<
+  //    " Y: " << targetPosition.getY() << "\n";  
   //if the start position is null (e.g., getNodeFromCoords returns that the coords are not on the map
   //should one position be off the grid, then return as there will be no viable path
   if (!startPositionNode || !targetPositionNode)
@@ -38,10 +38,10 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
 
   //add first node to end of list of openedNodes
   heap.addItem(startPositionNode);/*openSet*/ //heap.items.push_back(startPositionNode);
-  std::cout << "startPositionNode->gCost: " << startPositionNode->gCost << "\n";
-  std::cout << "startPositionNode->hCost: " << startPositionNode->hCost << "\n";
-  std::cout << "heap.getHeapSize(): " << heap.getHeapSize() << "\n";
-  std::cout << "closedSet.size(): " << closedSet.size() << "\n";
+  //std::cout << "startPositionNode->gCost: " << startPositionNode->gCost << "\n";
+  //std::cout << "startPositionNode->hCost: " << startPositionNode->hCost << "\n";
+  //std::cout << "heap.getHeapSize(): " << heap.getHeapSize() << "\n";
+  //std::cout << "closedSet.size(): " << closedSet.size() << "\n";
 
   //while there are still nodes to check
   while (/*openSet*/heap.getHeapSize() > 0)
@@ -55,10 +55,11 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
     {
       //RETRACE
       retracePath(startPositionNode, targetPositionNode);
-      std::cout << "heap.size() upon completion of path: " << heap.getHeapSize() << "\n";
+      // std::cout << "heap.size() upon completion of path: " << heap.getHeapSize() << "\n";
       closedSet.clear();
       heap.clean();
-      //grid->resetGrid(); //dubious if required
+      grid->resetGrid(); //dubious if required
+      // std::cout << "pathfinding reset correctly\n";
       return;
     }
     

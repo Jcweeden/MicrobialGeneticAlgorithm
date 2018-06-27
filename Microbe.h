@@ -16,7 +16,7 @@ class GameObject;
 class Microbe : public GameObject {
 public:
 
-  //starts at 1 and is decremented as the microbe increases in size and gets slower
+  //starts at 10 and is decremented as the microbe increases in size and gets slower
   float speedMultiplier;
 
   //number of food consumed at this point in time - reset to 0 upon reproducing
@@ -35,6 +35,7 @@ public:
   //the remaining size the microbe has to shrink by
   float radiusToShrinkBy;
 
+  int framesToNextPathfind;
   PathFinder pathFinder;
 
 public:

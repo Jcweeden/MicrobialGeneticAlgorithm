@@ -30,12 +30,12 @@ int main(int argc, char* argv[])
 
        frameTime = SDL_GetTicks() - frameStart;//how long the frame took to run
 
-       /*
+       
        if(frameTime < DELAY_TIME)//if time taken to run frame is less than desired
        {
          SDL_Delay((int)(DELAY_TIME - frameTime));//call delay to make wait for time to reach desired FPS
        }
-       */
+       
      }
    }
    else

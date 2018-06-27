@@ -49,7 +49,7 @@ public:
   void clean();
 
   void resetGrid();
-  
+  void resetTraverable();
   Node* getNodeFromCoords(Vector2D worldPosition);
 
   void setObstacleNodesToUntraversable();
