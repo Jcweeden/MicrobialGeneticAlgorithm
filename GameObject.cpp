@@ -102,6 +102,25 @@ bool GameObject::checkForCollisionWithCircle(GameObject* obj)
   }
 }
 
+bool GameObject::checkForCollisionWithPoint(Vector2D* point)
+{
+  //sqrt(sqr(x)+sqr(y))
+  
+  float dx = point->getX() - position.getX();
+  float dy = point->getY() - position.getY();
+  float radii = /*point->getWidth()*/1 + getWidth();
+
+  //if distance between origins of 2 circles is smaller than their combined radii 
+  if ( ( dx * dx )  + ( dy * dy ) < radii * radii )   {
+    //the circles are colliding
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void GameObject::setNewRandomisedPosition()
 {
   setPosition(Vector2D(rand() % (TheGame::Instance()->getWindowWidth()-30) + 15, //x

@@ -4,7 +4,7 @@
 #include "SDL2/SDL.h"
 #include "Vector2D.h"
 
-//#include "GameObject.h"
+#include "GameObject.h"
 #include "Microbe.h"
 #include "FoodSource.h"
 #include "Obstacle.h"
@@ -41,6 +41,9 @@ public:
 
   //
   PathFinder pathFinder;
+
+  //the index of the selected microbe whose path is drawn
+  int selectedMicrobeIndex;
   
 public:
   //create singleton instance
@@ -57,6 +60,7 @@ public:
 
   void clean();
 
+  void handleInput();
 };
 
 typedef Environment TheEnvironment;

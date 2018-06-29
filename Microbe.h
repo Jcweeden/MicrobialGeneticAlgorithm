@@ -4,7 +4,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h" 
 
-#include "GameObject.h"
+//#include "GameObject.h"
 #include "Environment.h"
 #include "PathFinder.h"
 
@@ -16,6 +16,17 @@ class GameObject;
 class Microbe : public GameObject {
 public:
 
+  //used within UI. the number represents the action currently being undertaken (e.g. searching for food)
+  //0 - seeking food
+  //1 - waiting for accessible food source
+  //2 - seeking partner
+  //3 - waiting for viable partner
+  //4 - dying
+  unsigned currentStatus;
+  
+  //the radius of the microbe upon spawning
+  float startingRadius;
+  
   //starts at 10 and is decremented as the microbe increases in size and gets slower
   float speedMultiplier;
 
@@ -24,19 +35,25 @@ public:
   //number of food that must be eaten before reproducing
   const unsigned foodRequiredToMate = 500;
 
-  //if the weaker partner during reproduction then 
+  //the number of children the microbe has produced
+  unsigned childrenProduced;
+
+  //the clock time when the microbe was spawned
+  unsigned microbeSpawnTime;
+  
+  //if the weaker partner during reproduction then the microbe will be set to dying, and slowly shrink
   bool dying;
 
-  float startingRadius;
-  
+  //the radius of the unborn child the microbe is currently carrying. Used to draw the child circle
   float childRadius;
   //amount to increase by per food = (startingRadius/foodRequiredToMate)
 
   //the remaining size the microbe has to shrink by
   float radiusToShrinkBy;
-
-  int framesToNextPathfind;
+  
   PathFinder pathFinder;
+  //the pathfinding algorithm only runs every x amount of frames. This is the number of frames to elapse before finding a new path
+  int framesToNextPathfind;
 
 public:
 

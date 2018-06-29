@@ -7,7 +7,7 @@ FoodSource::FoodSource() :
     GameObject(
         rand() % (TheGame::Instance()->getWindowWidth()-30) +15,//x
         rand() % (TheGame::Instance()->getWindowHeight()-30) +15,//y
-        /*startingRadius*/6.0f,//width
+        0.0f,//starting radius of 0, will grow to remainingRadiusToGrow
         0,//height (not used)
         rand() % 255,//r
         rand() % 255,//g

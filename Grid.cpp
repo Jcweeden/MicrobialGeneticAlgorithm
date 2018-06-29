@@ -8,7 +8,8 @@ Grid::Grid()
 {}
 
 Grid::Grid(unsigned p_gridSizeX, unsigned p_gridSizeY, float p_nodeDiameter)
-    : gridSize(Vector2D(p_gridSizeX, p_gridSizeY)), nodeDiameter(p_nodeDiameter), selectedObjectPosition(Vector2D(-1,-1))
+    : gridSize(Vector2D(p_gridSizeX, p_gridSizeY)), nodeDiameter(p_nodeDiameter), selectedObjectPosition(Vector2D(-1,-1)),
+      drawGridEnabled(false), drawTerrainEnabled(false), drawPathEnabled(true)
 {
   nodeRadius = nodeDiameter/2;
 
@@ -122,77 +123,82 @@ void Grid::drawGrid()
 {
   
   //Draw whether each node is traversable or not
-  
-  for (size_t y = 0; y < nodeCountY; y++)
+  if (drawTerrainEnabled)
   {
-    for (size_t x = 0; x < nodeCountX; x++)
+    for (size_t y = 0; y < nodeCountY; y++)
     {
-      //if traversable draw in green,
-      if (grid[x][y]->traversable)
+      for (size_t x = 0; x < nodeCountX; x++)
       {
-        boxRGBA (TheGame::Instance()->getRenderer(),
-                 grid[x][y]->position.getX(), grid[x][y]->position.getY(),
-                 grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
-                 0, 255, 0, 255);
-      }
-      else //is not travesable so draw in red
-      {
-        boxRGBA (TheGame::Instance()->getRenderer(),
-                 grid[x][y]->position.getX(), grid[x][y]->position.getY(),
-                 grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
-                 255, 0, 0, 255);
+        //if traversable draw in green,
+        if (grid[x][y]->traversable)
+        {
+          boxRGBA (TheGame::Instance()->getRenderer(),
+                   grid[x][y]->position.getX(), grid[x][y]->position.getY(),
+                   grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
+                   0, 255, 0, 255);
+        }
+        else //is not travesable so draw in red
+        {
+          boxRGBA (TheGame::Instance()->getRenderer(),
+                   grid[x][y]->position.getX(), grid[x][y]->position.getY(),
+                   grid[x][y]->position.getX() + nodeDiameter, grid[x][y]->position.getY() + nodeDiameter,
+                   255, 0, 0, 255);
+        }
       }
     }
-  }
-  
+  }  
 
   
   //std::cout<< pathway.size() << "\n";
   //draw pathway in some colour
-  if (pathway.size() > 0) {
-    for (size_t i = 0; i < pathway.size(); i++ )
-    {
-      boxRGBA (TheGame::Instance()->getRenderer(),
-               pathway[i]->position.getX(), pathway[i]->position.getY(),
-               pathway[i]->position.getX() + nodeDiameter, pathway[i]->position.getY() + nodeDiameter,
-               125, 125, 0, 255);
+  if (drawPathEnabled)
+  {
+    if (pathway.size() > 0) {
+      for (size_t i = 0; i < pathway.size(); i++ )
+      {
+        boxRGBA (TheGame::Instance()->getRenderer(),
+                 pathway[i]->position.getX(), pathway[i]->position.getY(),
+                 pathway[i]->position.getX() + nodeDiameter, pathway[i]->position.getY() + nodeDiameter,
+                 125, 125, 0, 255);
+      }
     }
-  }
     
 
-  //draw the node the selected object is in (if one is selected)
-  if(pathway.size() > 0) {
-    if (selectedObjectPosition.getX() >= 0 && selectedObjectPosition.getX() <= gridSize.getX() &&
-        selectedObjectPosition.getY() >= 0 && selectedObjectPosition.getY() <= gridSize.getY() )
-    {
-      Node* node = getNodeFromCoords(selectedObjectPosition);
-      boxRGBA (TheGame::Instance()->getRenderer(),
-               node->position.getX(), node->position.getY(),
-               node->position.getX() + nodeDiameter, node->position.getY() + nodeDiameter,
-               0, 0, 255, 255);
+    //draw the node the selected object is in (if one is selected)
+    if(pathway.size() > 0) {
+      if (selectedObjectPosition.getX() >= 0 && selectedObjectPosition.getX() <= gridSize.getX() &&
+          selectedObjectPosition.getY() >= 0 && selectedObjectPosition.getY() <= gridSize.getY() )
+      {
+        Node* node = getNodeFromCoords(selectedObjectPosition);
+        boxRGBA (TheGame::Instance()->getRenderer(),
+                 node->position.getX(), node->position.getY(),
+                 node->position.getX() + nodeDiameter, node->position.getY() + nodeDiameter,
+                 0, 0, 0, 255);
       
+      }
     }
   }
   
-  /*
   //draw black borders of the grid (if enabled)
-  for (size_t x = 0; x <= nodeCountX; x++)
-  {//draw vertical lines
-  vlineRGBA (TheGame::Instance()->getRenderer(),
-  x * nodeDiameter, 0,
-  gridSize.getY(),
-  0, 0, 0, 255);
+  if (drawGridEnabled)
+  {
+    for (size_t x = 0; x <= nodeCountX; x++)
+    {//draw vertical lines
+      vlineRGBA (TheGame::Instance()->getRenderer(),
+                 x * nodeDiameter, 0,
+                 gridSize.getY(),
+                 0, 0, 0, 255);
+    }
+    for (size_t y = 0; y <= nodeCountY; y++)
+    {//draw horizontal lines
+      hlineRGBA (TheGame::Instance()->getRenderer(),
+                 0, gridSize.getX(),
+                 y * nodeDiameter,
+                 0, 0, 0, 255);
+    }
   }
-  for (size_t y = 0; y <= nodeCountY; y++)
-  {//draw horizontal lines
-  hlineRGBA (TheGame::Instance()->getRenderer(),
-  0, gridSize.getX(),
-  y * nodeDiameter,
-  0, 0, 0, 255);
-  }
-  }
-  */
 }
+  
 
 
 void Grid::clean()
@@ -292,5 +298,26 @@ void Grid::resetTraverable()
     {
       grid[x][y]->traversable = true;
     }
+  }
+}
+
+
+void Grid::handleInput()
+{
+  //BUTTON PRESSES
+  if (TheInputHandler::Instance()->keyGPressed)
+  {
+    TheInputHandler::Instance()->keyGPressed = false;
+    drawGridEnabled = !drawGridEnabled;
+  }
+  if (TheInputHandler::Instance()->keyTPressed)
+  {
+    TheInputHandler::Instance()->keyTPressed = false;
+    drawTerrainEnabled = !drawTerrainEnabled;
+  }
+  if (TheInputHandler::Instance()->keyPPressed)
+  {
+    TheInputHandler::Instance()->keyPPressed = false;
+    drawPathEnabled = !drawPathEnabled;
   }
 }

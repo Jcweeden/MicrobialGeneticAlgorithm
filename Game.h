@@ -5,16 +5,17 @@
 #include <SDL2/SDL_image.h>
 #include "SDL2/SDL2_gfxPrimitives.h" 
 
+
 #include "InputHandler.h"
 //#include "Environment.h"
 //#include "GameObject.h"
-
 
 #include <iostream>
 #include <vector>
 
 //class GameObject;
 class Environment;
+class UI;
 
 class Game
 {
@@ -47,7 +48,6 @@ public:
   int getUIHeight(){return UIHeight;}
   int getWindowHeight(){return windowHeight;}
   int getWindowWidth(){return windowWidth;}
-  int getBorderWidth(){return borderWidth;}
 
   Uint32 getFrameTime() { return frameTime; }
   void setFrameTime(Uint32 val) { frameTime = val; }
@@ -69,9 +69,9 @@ private:
 
   int windowWidth;
   int windowHeight;
-  int borderWidth;
   int UIHeight;
 
+  UI* ui;
 
   //GameStateManager* m_pGameStateManager;
 

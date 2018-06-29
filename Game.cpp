@@ -1,7 +1,7 @@
 #include "Game.h"
 //#include "SoundMixer.h"
 
-//#include "CollisionManager.h"
+#include "UI.h"
 
 #include "Environment.h"
 
@@ -67,16 +67,18 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
    windowWidth = 600;
    windowHeight = 600;
-   borderWidth = 10;
-   UIHeight = 70;
+   UIHeight = 200;
    frameTime = 0;
 
    srand (time(NULL));
    // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(10,30,10, getWindowHeight(), getWindowWidth(), 20);
+   env->setup(10,40,10, getWindowHeight(), getWindowWidth(), 25);
    std::cout << "Game.init() - env->setup() complete\n";
+
+   ui = new UI();
+   std::cout << "Game.init() - ui->setup() complete\n";
    /*
    initText();
    loadSounds();
@@ -90,44 +92,6 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    
    return true;
 }
-/*
-void Game::initText()
-{
-
-  if(TTF_Init()==-1) {
-    printf("TTF_Init: %s\n", TTF_GetError());
-    exit(2);
-  }
-  
-  fontTTF = TTF_OpenFont("Assets/ka1.ttf", 24);
-  if (fontTTF == NULL) {
-        fprintf(stderr, "error: font not found\n");
-    }
-
-  scoreMessage = TTF_RenderText_Solid(fontTTF, "SCORE: 00 . 00", textColour); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
-  scoreText = SDL_CreateTextureFromSurface(m_pRenderer, scoreMessage); 
-  scoreRect.x = 0 + 30 + 55;  //controls the rect's x coordinate 
-  scoreRect.y = 20+54; // controls the rect's y coordinte
-  scoreRect.w = 150; // controls the width of the rect
-  scoreRect.h = 30; // controls the height of the rect
-
-  highScoreMessage = TTF_RenderText_Solid(fontTTF, "HIGH: 00 . 00", textColour); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
-  highScoreText = SDL_CreateTextureFromSurface(m_pRenderer, highScoreMessage); 
-  highScoreRect.x = windowWidth-150-30+55;  //controls the rect's x coordinate 
-  highScoreRect.y = 20+54; // controls the rect's y coordinte
-  highScoreRect.w = 150; // controls the width of the rect
-  highScoreRect.h = 30; // controls the height of the rect
-}
-
-//pass in 0 to update score, 1 to update highScore
-void Game::updateScore(std::string text)
-{  
-  text.insert(0, "SCORE: ");
-  scoreMessage = TTF_RenderText_Solid(fontTTF, text.c_str(), textColour);
-  scoreText = SDL_CreateTextureFromSurface(m_pRenderer, scoreMessage); 
-}
-*/
-
 
 void Game::loadSounds()
 {
@@ -143,31 +107,20 @@ void Game::render()
 
   env->draw();
 
+  ui->draw();
+
   SDL_RenderPresent(m_pRenderer);  //draw to the screen
 }
 
 void Game::update() {
-  /*
-   //loop through and update our objects
-   for(size_t i = 0; i < m_gameObjects.size(); i++)
-   {
-     m_gameObjects[i]->update();
-   }
-  */
-
-    env->update();
-
+  
+  env->update();
+  ui->update();
 }
 
 void Game::clean() {
   std::cout << "Game: cleaning game\n";
-  /*
-  for (size_t i = 0; i < m_gameObjects.size(); i++) {
-    m_gameObjects[i]->clean();
-  }
-  
-  m_gameObjects.clear();
-  */
+
   //destroy fonts
   /*
   SDL_DestroyTexture(scoreText);
@@ -176,6 +129,7 @@ void Game::clean() {
   */
   env->clean();
   delete TheEnvironment::Instance();
+  delete ui;
   
   SDL_DestroyWindow (m_pWindow);
   SDL_DestroyRenderer (m_pRenderer);

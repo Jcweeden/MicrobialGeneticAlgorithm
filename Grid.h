@@ -36,7 +36,8 @@ public:
   //holds the current set of Nodes that form the path of the selected Microbe
   std::vector<Node*> pathway;
 
-  
+  //draw options
+  bool drawGridEnabled, drawTerrainEnabled, drawPathEnabled;
 public:
 
   Grid();
@@ -47,6 +48,7 @@ public:
   void drawGrid();
 
   void clean();
+  void handleInput();
 
   void resetGrid();
   void resetTraverable();

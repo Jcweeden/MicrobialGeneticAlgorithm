@@ -50,6 +50,7 @@ public:
   //removes all forces accumulated in a frame
   void clearAccumForces();
 
+  bool checkForCollisionWithPoint(Vector2D* point);
   bool checkForCollisionWithCircle(GameObject* obj);
 
 public:

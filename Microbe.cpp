@@ -13,7 +13,7 @@ Microbe::Microbe() :
         rand() % 225 + 30,//b
         rand() % 160 + 40 //a
                ),
-    foodEaten(0), dying(false), speedMultiplier(10.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f), framesToNextPathfind(0)
+    foodEaten(0), dying(false), speedMultiplier(10.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f), framesToNextPathfind(0), childrenProduced(0), microbeSpawnTime(SDL_GetTicks()), currentStatus(0)
 {
 }
 
@@ -33,7 +33,7 @@ void Microbe::draw()
 
 void Microbe::update()
 {
-  int resetVal = 2;
+  int resetVal = 4;
   
   //if the shrinkage is due to reproduction
   if (radiusToShrinkBy > 0 )
@@ -71,6 +71,7 @@ void Microbe::update()
 
     if (nearestPartnerIndex != -1) //if there is an available partner
     {
+      currentStatus = 2;
       //determine path to nearest partner
       if (framesToNextPathfind <= 0) {
         pathFinder.findPath(position, TheEnvironment::Instance()->microbes[nearestPartnerIndex]->position);
@@ -93,9 +94,10 @@ void Microbe::update()
     }
     else //no available partners
     {    //go to random location
+      currentStatus = 3;
       if (framesToNextPathfind <= 0) {
         pathFinder.findPath(position, generateRandomNearLocation());
-        framesToNextPathfind = resetVal;
+        framesToNextPathfind = resetVal*6;
       }
         
       if (pathFinder.pathway.size() > 0) {
@@ -112,7 +114,7 @@ void Microbe::update()
     
     if (nearestFoodSource != -1) //if there is an available foodSource
     {
-
+      currentStatus = 0;
       //determine path to nearest foodSource
       if (framesToNextPathfind <= 0) {
         pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
@@ -136,7 +138,7 @@ void Microbe::update()
     }
     else //no food sources
     { //go to random location
-
+      currentStatus = 1;
       if (framesToNextPathfind <= 0) {
         pathFinder.findPath(position, generateRandomNearLocation());
         framesToNextPathfind = resetVal;
@@ -151,6 +153,7 @@ void Microbe::update()
   }
   else //dying - randomly move about whilst shrinking
   {
+    currentStatus = 4;
     if (framesToNextPathfind <= 0) {
       pathFinder.findPath(position, generateRandomNearLocation());
       framesToNextPathfind = resetVal;
@@ -290,6 +293,9 @@ void Microbe::consumedFoodSource()
 
 void Microbe::completedReproduction()
 {
+  //increment the counter of how many children the microbe has produced
+  childrenProduced++;
+  
   //reset food counter so will start collecting food once again
   foodEaten = 0;
 
@@ -315,6 +321,9 @@ bool Microbe::isReadyToReproduce()
 
 void Microbe::deathFromReproduction()
 {
+  //increment the counter of how many children the microbe has produced
+  childrenProduced++;
+  
   //set radiusToShrinkBy to size of microbe so over next frames will shrink entirely
   radiusToShrinkBy = width;
 
@@ -325,7 +334,7 @@ void Microbe::deathFromReproduction()
   velocity.clear();
 
   //reduce the speed of the microbe as it dies
-  speedMultiplier = 0.05f;
+  speedMultiplier = 0.1f;
 }
 
 

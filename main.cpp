@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
    
    std::cout << "\n\nMain: game init attempt..\n";
 
-   if(TheGame::Instance()->init("MicrobialGA", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, true)) {
+   if(TheGame::Instance()->init("MicrobialGA", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 800, true)) {
    std::cout << "Main: game init successful\n";
 
    while (TheGame::Instance()->running())

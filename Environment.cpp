@@ -19,6 +19,8 @@ Environment::Environment()
 void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigned obstaclesCount,
                         unsigned gridSizeX, unsigned gridSizeY, unsigned nodeDiameter)
 {
+
+  selectedMicrobeIndex = 0;
   float defaultDampingVal = 0.6f;
 
   //init obstacles first so they nodes can be set to intraversble in the grid
@@ -125,10 +127,8 @@ void Environment::draw()
 
 void Environment::update()
 {
-  //std::cout << "microbes: " << microbes.size() << "\n";
-
-  //foodSources[0]->position = Vector2D(300,500);
-  //microbes[0]->position = Vector2D(100,100);
+  handleInput();
+  grid.handleInput();
   
   for (size_t i = 0; i < foodSources.size(); i++)
   {
@@ -148,6 +148,16 @@ void Environment::update()
     {
       //std::cout << "microbe " << i << "/" << microbes.size() <<" to be deleted\n";
       toDelete.push_back(i);
+
+      //if a microbe is selected
+      if ( selectedMicrobeIndex >= 0) {
+
+        //if an microbe before in the array is being deleted, reduce the index to keep following same microbe
+        if (i < selectedMicrobeIndex) selectedMicrobeIndex--;
+
+        //and is the microbe being deleted, then set the selected index to -1 (off)
+        if (selectedMicrobeIndex == i)  selectedMicrobeIndex = -1;
+      }
     }
   }
   
@@ -162,9 +172,10 @@ void Environment::update()
     }
   }
 
-  //std::cout << "about to apply path\n";
-  //grid.pathway = microbes[0]->pathFinder.pathway;
-  //std::cout << "applied path\n";
+  if (selectedMicrobeIndex >= 0)
+  {
+  grid.pathway = microbes[selectedMicrobeIndex]->pathFinder.pathway;
+  }
 }
 
 void Environment::clean()
@@ -193,3 +204,25 @@ void Environment::clean()
 }
 
 
+
+void Environment::handleInput()
+{
+  //MOUSE
+  //spawn white coloured lighter shapes from left-click
+  if (TheInputHandler::Instance()->getMouseButtonState(0))
+  {
+    Vector2D mousePos (TheInputHandler::Instance()->getMousePosition()->getX(),
+                       TheInputHandler::Instance()->getMousePosition()->getY());
+
+    for (size_t i = 0; i < microbes.size(); i++)
+    { 
+      if (microbes[i]->checkForCollisionWithPoint(&mousePos))
+      {
+        selectedMicrobeIndex = i;
+        return;
+      }
+    }
+    //else, no microbe was selected - so select none
+    selectedMicrobeIndex = -1;
+  }
+}
