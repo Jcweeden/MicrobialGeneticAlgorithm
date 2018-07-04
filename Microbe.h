@@ -7,6 +7,7 @@
 //#include "GameObject.h"
 #include "Environment.h"
 #include "PathFinder.h"
+#include "MicrobialGA.h"
 
 #include <iostream>
 #include <string>
@@ -54,6 +55,8 @@ public:
   PathFinder pathFinder;
   //the pathfinding algorithm only runs every x amount of frames. This is the number of frames to elapse before finding a new path
   int framesToNextPathfind;
+
+  MicrobialGA mga;
 
 public:
 

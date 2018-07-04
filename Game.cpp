@@ -121,14 +121,10 @@ void Game::update() {
 void Game::clean() {
   std::cout << "Game: cleaning game\n";
 
-  //destroy fonts
-  /*
-  SDL_DestroyTexture(scoreText);
-  SDL_DestroyTexture(highScoreText);
-  TTF_Quit();
-  */
   env->clean();
   delete TheEnvironment::Instance();
+
+  ui->clean();
   delete ui;
   
   SDL_DestroyWindow (m_pWindow);

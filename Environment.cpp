@@ -50,6 +50,7 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
   { 
     Microbe *microbe = new Microbe();
 
+    
     //if and while the coords randomly selected put the microbe into untraversable terrain
     //randomise position again, and loop until the object is placed in traversable terrain
     while (!(grid.getNodeFromCoords(microbe->position)->traversable))
@@ -69,6 +70,9 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
     //set the pathfinder to use the initialised grid
     microbe->pathFinder.setGrid(&grid);
 
+    //init the microbial genetic algorithm to be assigned new random genes
+    microbe->mga.assignNewRandomGenotypes();
+    
     microbes.push_back(microbe);
   }
 

@@ -80,6 +80,31 @@ int foodEatenPercentage;
   SDL_Texture* foodText;
   SDL_Rect foodRect;
 
+  SDL_Surface* fitnessLabelMessage;
+  SDL_Texture* fitnessLabelText;
+  SDL_Rect fitnessLabelRect;
+
+  SDL_Surface* fitnessMessage;
+  SDL_Texture* fitnessText;
+  SDL_Rect fitnessRect;
+
+  SDL_Surface* gene0Message;
+  SDL_Texture* gene0Text;
+  SDL_Rect gene0Rect;
+
+  SDL_Surface* gene1Message;
+  SDL_Texture* gene1Text;
+  SDL_Rect gene1Rect;
+
+  SDL_Surface* gene2Message;
+  SDL_Texture* gene2Text;
+  SDL_Rect gene2Rect;
+
+  SDL_Surface* gene3Message;
+  SDL_Texture* gene3Text;
+  SDL_Rect gene3Rect;
+
+
 public:
   UI();
   
@@ -88,6 +113,8 @@ public:
   void update();
 
 void initText();
+
+void clean();
 };
 
 #endif

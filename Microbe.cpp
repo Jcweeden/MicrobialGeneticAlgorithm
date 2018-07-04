@@ -97,7 +97,7 @@ void Microbe::update()
       currentStatus = 3;
       if (framesToNextPathfind <= 0) {
         pathFinder.findPath(position, generateRandomNearLocation());
-        framesToNextPathfind = resetVal*6;
+        framesToNextPathfind = resetVal*20;
       }
         
       if (pathFinder.pathway.size() > 0) {
