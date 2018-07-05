@@ -7,7 +7,7 @@ MicrobialGA::MicrobialGA()
   targetGenotypes = {0,1,2,1};
 
   //setup genes array
-  genotypes = { };
+  genotypes = {0,0,0,0};
 
 }
 
@@ -31,4 +31,33 @@ unsigned MicrobialGA::getFitness() {
     }
   }
   return fitnessCounter;
+}
+
+ char MicrobialGA::getGenotypeLetter(const size_t index)
+ {
+   switch (getGenotype(index))
+   {
+     case 0:
+       return 'C';
+     case 1:
+       return 'D';
+     case 2:
+       return 'E';
+     case 3:
+       return 'F';
+     default:
+       return false;
+   }
+ }
+
+
+bool MicrobialGA::isGenotypeCorrect(const size_t index)
+{
+  if (genotypes[index] == targetGenotypes[index]) return true;
+  else return false;
+}
+
+void MicrobialGA::mutateGenotype()
+{
+  genotypes[rand() % 4] = rand() % 4;
 }

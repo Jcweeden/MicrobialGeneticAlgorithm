@@ -129,30 +129,30 @@ void UI::initText()
 
   gene0Message = TTF_RenderText_Blended(fontTTF, "A", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
   gene0Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene0Message); 
-  gene0Rect.x = 295;  //controls the rect's x coordinate 
+  gene0Rect.x = 298;  //controls the rect's x coordinate 
   gene0Rect.y = 755; // controls the rect's y coordinte
-  gene0Rect.w = 29; // controls the width of the rect
+  gene0Rect.w = 23; // controls the width of the rect
   gene0Rect.h = 29; // controls the height of the rect
 
   gene1Message = TTF_RenderText_Blended(fontTTF, "B", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
   gene1Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene1Message); 
-  gene1Rect.x = 352;  //controls the rect's x coordinate 
+  gene1Rect.x = 355;  //controls the rect's x coordinate 
   gene1Rect.y = 755; // controls the rect's y coordinte
-  gene1Rect.w = 29; // controls the width of the rect
+  gene1Rect.w = 23; // controls the width of the rect
   gene1Rect.h = 29; // controls the height of the rect
 
   gene2Message = TTF_RenderText_Blended(fontTTF, "C", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
   gene2Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene2Message); 
-  gene2Rect.x = 409;  //controls the rect's x coordinate 
+  gene2Rect.x = 412;  //controls the rect's x coordinate 
   gene2Rect.y = 755; // controls the rect's y coordinte
-  gene2Rect.w = 29; // controls the width of the rect
+  gene2Rect.w = 23; // controls the width of the rect
   gene2Rect.h = 29; // controls the height of the rect
 
   gene3Message = TTF_RenderText_Blended(fontTTF, "D", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
   gene3Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene3Message); 
-  gene3Rect.x = 466;  //controls the rect's x coordinate 
+  gene3Rect.x = 469;  //controls the rect's x coordinate 
   gene3Rect.y = 755; // controls the rect's y coordinte
-  gene3Rect.w = 29; // controls the width of the rect
+  gene3Rect.w = 23; // controls the width of the rect
   gene3Rect.h = 29; // controls the height of the rect
 }
 
@@ -241,8 +241,28 @@ void UI::draw()
             461, 750,
             500, 789,
             102, 102, 102, 255);
- 
-    
+  }
+  else //a microbe is selected, so draw boxes in either green or red depending on whether the gene is correct
+  {
+    if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(0))
+      boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 328, 789, 0, 255, 0, 255);
+    else
+      boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 329, 789, 255, 0, 0, 255);
+
+    if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(1))
+      boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 385, 789, 0, 255, 0, 255);
+    else
+      boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 386, 789, 255, 0, 0, 255);
+
+    if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(2))
+      boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 442, 789, 0, 255, 0, 255);
+    else
+      boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 443, 789, 255, 0, 0, 255);
+                
+    if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(3))
+      boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 499, 789, 0, 255, 0, 255);
+    else
+      boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 500, 789, 255, 0, 0, 255);
   }
 
   //gene box outlines
@@ -265,30 +285,38 @@ void UI::draw()
   
   ///FOOD EATEN
 
-  float barFull = 0.0f;
+  if (microbeIndex == -1) {
+    boxRGBA(TheGame::Instance()->getRenderer(),
+            239, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
+            549, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 63,
+            102, 102, 102, 255);
+  }
+  else
+  {
+    float barFull = 0.0f;
 
-  barFull = 310 - (310 * foodEatenPercentage/100);
+    barFull = 310 - (310 * foodEatenPercentage/100);
   
-  //red bar for food eaten
-  boxRGBA(TheGame::Instance()->getRenderer(),
-          549-barFull, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
-          549, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 63,
-          255, 0, 0, 255);
+    //red bar for food eaten
+    boxRGBA(TheGame::Instance()->getRenderer(),
+            549-barFull, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
+            549, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 63,
+            255, 0, 0, 255);
 
-  if (barFull == 310) barFull = 309;
+    if (barFull == 310) barFull = 309;
   
-  //green bar for food eaten
-  boxRGBA(TheGame::Instance()->getRenderer(),
-          240, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
-          549 - barFull, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 63,
-          0, 255, 0, 255);
-
+    //green bar for food eaten
+    boxRGBA(TheGame::Instance()->getRenderer(),
+            240, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
+            549 - barFull, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 63,
+            0, 255, 0, 255);
+  }
   //draw outline box for food eaten
   rectangleRGBA(TheGame::Instance()->getRenderer(),
                 240, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
                 550, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 64,
                 0, 0, 0, 255);
-
+  
   //TEXT
   //draw width text
   SDL_RenderCopy(TheGame::Instance()->getRenderer(), widthLabelText, NULL, &widthLabelRect); 
@@ -339,8 +367,8 @@ void UI::update()
     width.insert(0," ");
     width.append(" ");
     widthMessage = TTF_RenderText_Blended(fontTTF,
-                                        width.c_str(),
-                                        textColour);
+                                          width.c_str(),
+                                          textColour);
     widthText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), widthMessage);
     SDL_FreeSurface( widthMessage );
 
@@ -350,8 +378,8 @@ void UI::update()
     speed.insert(0," ");
     speed.append(" ");
     speedMessage = TTF_RenderText_Blended(fontTTF,
-                                        speed.c_str(),
-                                        textColour);
+                                          speed.c_str(),
+                                          textColour);
     speedText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), speedMessage);
     SDL_FreeSurface( speedMessage );
 
@@ -362,8 +390,8 @@ void UI::update()
     children.insert(2, "  ");
     children.insert(0, "  ");
     childMessage = TTF_RenderText_Blended(fontTTF,
-                                        children.c_str(),
-                                        textColour);
+                                          children.c_str(),
+                                          textColour);
     childText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), childMessage);
     SDL_FreeSurface( childMessage );
 
@@ -388,8 +416,8 @@ void UI::update()
     lifetime.append(std::to_string(seconds));   
 
     lifetimeMessage = TTF_RenderText_Blended(fontTTF,
-                                           lifetime.c_str(),
-                                           textColour);
+                                             lifetime.c_str(),
+                                             textColour);
     lifetimeText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), lifetimeMessage);
     SDL_FreeSurface( lifetimeMessage );
 
@@ -433,6 +461,49 @@ void UI::update()
                                          textColour);
     foodText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), foodMessage);
     SDL_FreeSurface( foodMessage );
+
+    //GENES
+    if( gene0Text != NULL ) SDL_DestroyTexture( gene0Text );
+    gene0Message = TTF_RenderText_Blended(fontTTF,
+                                          std::string(1, TheEnvironment::Instance()->microbes[microbeIndex]->
+                                                      mga.getGenotypeLetter(0)).c_str(),
+                                          textColour);
+    gene0Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene0Message);
+    SDL_FreeSurface( gene0Message );
+
+    if( gene1Text != NULL ) SDL_DestroyTexture( gene1Text );
+    gene1Message = TTF_RenderText_Blended(fontTTF,
+                                          std::string(1, TheEnvironment::Instance()->microbes[microbeIndex]->
+                                                      mga.getGenotypeLetter(1)).c_str(),
+                                          textColour);
+    gene1Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene1Message);
+    SDL_FreeSurface( gene1Message );
+    
+    if( gene2Text != NULL ) SDL_DestroyTexture( gene2Text );
+    gene2Message = TTF_RenderText_Blended(fontTTF,
+                                          std::string(1, TheEnvironment::Instance()->microbes[microbeIndex]->
+                                                      mga.getGenotypeLetter(2)).c_str(),
+                                          textColour);
+    gene2Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene2Message);
+    SDL_FreeSurface( gene2Message );
+
+    if( gene3Text != NULL ) SDL_DestroyTexture( gene3Text );
+    gene3Message = TTF_RenderText_Blended(fontTTF,
+                                          std::string(1, TheEnvironment::Instance()->microbes[microbeIndex]->
+                                                      mga.getGenotypeLetter(3)).c_str(),
+                                          textColour);
+    gene3Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene3Message);
+    SDL_FreeSurface( gene3Message );
+
+    if( fitnessText != NULL ) SDL_DestroyTexture( fitnessText );
+    std::string fitnessStr = std::to_string(TheEnvironment::Instance()->microbes[microbeIndex]->
+                                                mga.getFitness());
+    fitnessStr.append(" / 4");
+    fitnessMessage = TTF_RenderText_Blended(fontTTF,
+                                           fitnessStr.c_str(),
+                                           textColour);
+    fitnessText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), fitnessMessage);
+    SDL_FreeSurface( fitnessMessage );
   }
   else
   {

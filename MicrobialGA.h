@@ -22,6 +22,13 @@ public:
 
   void assignNewRandomGenotypes();
   void setGenotype(unsigned geneIndex, unsigned geneValue);
+
+  const unsigned getGenotype(const size_t index) { return genotypes[index];}
+  char getGenotypeLetter(const size_t index);
+
+  bool isGenotypeCorrect(const size_t index);
+
+  void mutateGenotype();
 };
 
 #endif

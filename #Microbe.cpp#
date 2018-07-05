@@ -384,6 +384,7 @@ void Microbe::produceChild(const Microbe* losingParent)
 
   //initially set genes to those of the losing parent
   
+  
   //copy one correct gene over one incorrect gene
   size_t randomGeneIndex;
   bool foundGeneToOverwrite = false;

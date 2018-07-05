@@ -74,7 +74,7 @@ public:
   
   void consumedFoodSource();
 
-  void produceChild();
+  void produceChild(const Microbe* losingParent);
   void completedReproduction();
   void deathFromReproduction();
   
