@@ -35,6 +35,13 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
 
     obstacles.push_back(obstacle);
   }
+
+  ///TEST
+  obstacles[0]->position = Vector2D(250, 300);
+  obstacles[0]->width = 300;
+  obstacles[0]->height = 170;
+  ///TEST
+
   
   std::cout << "Env.setup() before grid = Grid\n";
 
@@ -133,6 +140,35 @@ void Environment::update()
 {
   handleInput();
   grid.handleInput();
+
+
+  ///TEST
+
+
+  //checking for partner  
+  /*
+  microbes[0]->position = Vector2D(303,103);
+  microbes[0]->foodEaten = 500;
+
+  microbes[1]->position = Vector2D(303, 503);
+  microbes[1]->foodEaten = 500;
+
+  foodSources[0]->position = Vector2D(303, 503);
+  */
+  
+  //checking for food
+  /*
+  microbes[0]->position = Vector2D(303,103);
+  microbes[0]->foodEaten = 499;
+
+  microbes[1]->position = Vector2D(303, 503);
+  microbes[1]->foodEaten = 500;
+
+  foodSources[0]->position = Vector2D(303, 503);
+  */
+
+  ///TEST
+
   
   for (size_t i = 0; i < foodSources.size(); i++)
   {
@@ -175,10 +211,11 @@ void Environment::update()
       //std::cout << "deleted microbe " << i << "/" << toDelete.size() <<"\n";
     }
   }
-
-  if (selectedMicrobeIndex >= 0)
+  
+  //if a microbe is selected, update the grid to so that the selected microbe's pathway can be drawn
+  if (selectedMicrobeIndex != -1)
   {
-  grid.pathway = microbes[selectedMicrobeIndex]->pathFinder.pathway;
+    grid.pathway = microbes[selectedMicrobeIndex]->pathFinder.pathway;
   }
 }
 

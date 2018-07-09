@@ -18,7 +18,6 @@ void Heap::clean()
   
   items.clear();
   itemsCount = 0;
-  //std::cout << "heap->itemsSize after clear: " << items.size() << "\n";
 }
 
 void Heap::addItem(Node* item)
@@ -30,8 +29,9 @@ void Heap::addItem(Node* item)
   itemsCount++;
 }
 
-//remove from item from the heap and set final item in heap to its position
+//remove first item from the heap and set final item in heap to its position
 //then sort down to rearrange heap into correct order
+//first item removed will have lowest fCost
 Node* Heap::removeFirstItem()
 {
   Node* firstItem = items[0];
@@ -42,7 +42,6 @@ Node* Heap::removeFirstItem()
   items[0] = items[itemsCount];
   items[0]->heapIndex = 0;
 
-  //items.erase(items.begin() +items.size()-1); //items[items.size()-1];
   sortDown(items[0]);
   return firstItem;
 }
@@ -72,13 +71,11 @@ bool Heap::isInHeap(Node* item)
 {
   //check if item's heap index exists in the array
   if (items[item->heapIndex]/*->heapIndex*/ == item/*->heapIndex*/) //DUBIOUS
-    // if (items[item->heapIndex]->heapIndex == item->heapIndex) //DUBIOUS
       return true;
     else
       return false;
 }
 
-//
 void Heap::sortUp(Node* item)
 {
   //get parent index of node item
@@ -89,9 +86,8 @@ void Heap::sortUp(Node* item)
   {
     Node* parentItem = items[parentIndex];
 
-    //if item has a higher priority than parent
-    //if (item->heapIndex > parentItem->heapIndex) //DUBIOUS
-    if (item->compareTo(parentItem) > 0) //DUBIOUS
+    //if item has a higher priority (lower fCost) than parent
+    if (item->fCost() < parentItem->fCost())
     {
       //swap the item's position in the heap with its parents
       swapItems(item, parentItem);
@@ -125,9 +121,8 @@ void Heap::sortDown(Node* item)
       //if item has two children (child on right)
       if (childIndexRight < itemsCount)
       {
-        //if child on right has higher priority than child on left
-        //if (items[childIndexRight]->heapIndex > items[childIndexLeft]->heapIndex) //DUBIOUS
-        if (items[childIndexRight]->compareTo(items[childIndexLeft]) < 0)
+        //if child on right has higher priority (lower fCost in min heap) than child on left
+        if (items[childIndexRight]->fCost() < items[childIndexLeft]->fCost())
         { //right child has higher priority
           swapIndex = childIndexRight;
         }
@@ -135,19 +130,70 @@ void Heap::sortDown(Node* item)
       //swap index is now equal to child with highest priority
       
       //check if parent has lower priority than highest priority child
-      //if (item->heapIndex < items[swapIndex]->heapIndex)  //less DUBIOUS
-      if (item->compareTo(items[swapIndex]) < 0)
+      if (item->fCost() > items[swapIndex]->fCost()) 
       {
         //if so, then swap them
         swapItems(item, items[swapIndex]);
       }
       
       //else parent has higher priority, exit loop
-      else return;
-      
+      else return;   
     }
     //parent has no children
     else return;
   }
 }
+
+void Heap::print()
+{
+  if (itemsCount > 0)
+    print_tree(items);
+
+    std::cout << "\n";
+}
+
+std::string do_padding (unsigned index, unsigned mlength){
+  std::string padding;
+  if (int((index-1)/2) != 0){
+    return (int((index-1)/2) % 2 == 0) ?
+    (do_padding(int((index-1)/2),mlength) + std::string(mlength+4,' ') + " ")  :
+    (do_padding(int((index-1)/2),mlength) + std::string(mlength+3,' ') + " |") ;
+  }
+  return padding;
+}
+
+
+
+void Heap::printer (std::vector<Node*> const & tree, unsigned index, unsigned mlength){
+  auto last = itemsCount - 1 ;
+  auto  left = 2 * index + 1 ;
+  auto  right = 2 * index + 2 ;
+  std::cout << " " << tree[index]->fCost() << " ";
+  if (left <= last){
+    auto llength = std::to_string(tree[left]->fCost()).size();
+    std::cout << "---" << std::string(mlength - llength,'-');
+    printer(tree,left,mlength);
+    if (right <= last) {
+      auto rlength = std::to_string(tree[right]->fCost()).size();
+      std::cout << "\n" << do_padding(right,mlength) << std::string(mlength+ 3,' ') << " | ";
+      std::cout << "\n" << do_padding(right,mlength) << std::string(mlength+ 3,' ') << " └" <<
+      std::string(mlength - rlength,'-');
+      printer(tree,right,mlength);
+    }
+  }
+}
+
+
+void Heap::print_tree (std::vector<Node*> & tree){
+  unsigned mlength = 0;
+  for (size_t i = 0; i < itemsCount; i++){
+    auto clength = std::to_string(tree[i]->fCost()).size();
+    if (clength > mlength) {
+      mlength = std::to_string(tree[i]->fCost()).size();
+    }
+  }
+  std::cout <<  std::string(mlength- std::to_string(items[0]->fCost()).size(),' ');
+  printer(tree,0,mlength);
+}
+
 

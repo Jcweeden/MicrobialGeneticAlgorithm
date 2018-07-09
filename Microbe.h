@@ -36,6 +36,9 @@ public:
   //number of food that must be eaten before reproducing
   const unsigned foodRequiredToMate = 500;
 
+
+  unsigned nearestFoodSource;
+  
   //the number of children the microbe has produced
   unsigned childrenProduced;
 

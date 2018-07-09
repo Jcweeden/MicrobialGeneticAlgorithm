@@ -11,37 +11,27 @@ void PathFinder::setGrid(Grid* p_grid)
   grid = p_grid;
 }
 
-void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
+bool PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
 {
   Node* startPositionNode = grid->getNodeFromCoords(startingPosition);
   Node* targetPositionNode = grid->getNodeFromCoords(targetPosition);
-  //std::cout << "startingPosition: X: " << startingPosition.getX() <<
-  //    " Y: " << startingPosition.getY() << "\n";
-      // std::cout << "targetPosition: X: " << targetPosition.getX() <<
-  //    " Y: " << targetPosition.getY() << "\n";  
   //if the start position is null (e.g., getNodeFromCoords returns that the coords are not on the map
   //should one position be off the grid, then return as there will be no viable path
   if (!startPositionNode || !targetPositionNode)
   { //then do not find a new path, return
-    return;
+    return false;
   }
   //or if the target node is not traversable then return also
   else if (targetPositionNode->traversable == false)
   {
-    return;
+    return false;
   }
-  
-  //Heap heap;
   
   heap.setHeapSize(grid->nodeCountX*grid->nodeCountY); //std::list<Node*> openSet;
   std::vector<Node*> closedSet;
 
   //add first node to end of list of openedNodes
   heap.addItem(startPositionNode);/*openSet*/ //heap.items.push_back(startPositionNode);
-  //std::cout << "startPositionNode->gCost: " << startPositionNode->gCost << "\n";
-  //std::cout << "startPositionNode->hCost: " << startPositionNode->hCost << "\n";
-  //std::cout << "heap.getHeapSize(): " << heap.getHeapSize() << "\n";
-  //std::cout << "closedSet.size(): " << closedSet.size() << "\n";
 
   //while there are still nodes to check
   while (/*openSet*/heap.getHeapSize() > 0)
@@ -60,15 +50,15 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
       heap.clean();
       grid->resetGrid(); //dubious if required
       // std::cout << "pathfinding reset correctly\n";
-      return;
+      return true;
     }
     
     //FOR EACH NEIGHTBOURING NODE
     for (Node* neighbour : grid->getNeighbouringNodes(node))
     {
-      //if neigh is not in closedSet, or is intraversable then skip to next neighbour
-      if (neighbour-> traversable == false) continue;
-      if (std::find(closedSet.begin(), closedSet.end(), neighbour) != closedSet.end()) continue;
+      //if neigh is in closedSet, or is intraversable then skip to next neighbour
+      if (neighbour->traversable == false ||
+          std::find(closedSet.begin(), closedSet.end(), neighbour) != closedSet.end()) continue;
 
       //IF NEW PATH TO NEIGHBOUR IS SHORTER THAN OLD PATH OR NEIGHBOUR IS NOT IN OPEN
       //recalculate movement cost for already open neighbours
@@ -76,7 +66,7 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
 
       //bool found = (std::find(/*openSet*/heap.items.begin(), /*openSet*/heap.items.end(), neighbour) != /*openSet*/heap.items.end());
 
-      if (newMovementCostToNeighbour < neighbour->gCost || !heap.isInHeap(neighbour) ) /*found == false //!openSet.contains(neighbour)*/
+      if (newMovementCostToNeighbour < neighbour->gCost || !heap.isInHeap(neighbour) )// (found == false)) //!openSet.contains(neighbour)*/
       {
         neighbour->gCost = newMovementCostToNeighbour;
         neighbour->hCost = calcManhattanDistance(neighbour,targetPositionNode);
@@ -84,7 +74,7 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
 
         //bool found = (std::find(/*openSet*/heap.items.begin(), /*openSet*/heap.items.end(), neighbour) != /*openSet*/heap.items.end());
         
-        if (!heap.isInHeap(neighbour)) /*(found == false //!openSet.contains(neighbour))*/
+        if (!heap.isInHeap(neighbour))// (found == false) //!openSet.contains(neighbour)
         {
           /*openSet*//*heap.items.push_back*/heap.addItem(neighbour);
         }
@@ -95,6 +85,8 @@ void PathFinder::findPath(Vector2D startingPosition, Vector2D targetPosition)
       }
     }
   }
+  //return to alleviate warning - return false if all paths explored and no route to target found.
+  return false;
 }
 
 void PathFinder::retracePath(Node* start, Node* end)

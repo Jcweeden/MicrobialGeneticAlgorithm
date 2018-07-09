@@ -121,7 +121,6 @@ void Grid::setObstacleNodesToUntraversable()
 
 void Grid::drawGrid()
 {
-  
   //Draw whether each node is traversable or not
   if (drawTerrainEnabled)
   {
@@ -263,11 +262,12 @@ std::vector<Node*> Grid::getNeighbouringNodes(Node* node)
       if (neighbourX >= 0 && neighbourX <= (int)nodeCountX-1 &&
           neighbourY >= 0 && neighbourY <= (int)nodeCountY-1)
       {
-        //add to neighbours
+        //add to neighboursy
         neighbours.push_back(grid[neighbourX][neighbourY]);
       } 
     }
   }
+  //if (node->gridXIndex == 8 && node->gridYIndex == 6) std::cout << neighbours.size() << "\n\n\n\n";
   
   //return the list of existing neighbouring nodes
   return neighbours;
@@ -320,4 +320,53 @@ void Grid::handleInput()
     TheInputHandler::Instance()->keyPPressed = false;
     drawPathEnabled = !drawPathEnabled;
   }
+}
+
+void Grid::printNodeValues(Node* startPos, Node* targetPos)
+{
+  std::cout << "";
+
+  
+  for (size_t y = 0; y < nodeCountY; y++)
+  {
+    std::cout << "\n";
+    for (size_t x = 0; x < nodeCountX; x++)
+    {
+      if (x == startPos->gridXIndex && y == startPos->gridYIndex)
+      {
+        std::cout << "ST   ";
+      }
+      else if (x == targetPos->gridXIndex && y  == targetPos->gridYIndex)
+      {
+        std::cout << "END  ";
+      }
+      
+      else if (!grid[x][y]->traversable)
+      {
+         int a = grid[x][y]->fCost();
+        if (a >= 100)
+          std::cout << "N" << a << " ";
+        else if (a >= 10)
+          std::cout << "N" << a << "  ";
+        else
+          std::cout << "N" << a << "   ";
+        
+      }
+      
+      else
+      {
+      
+        int a = grid[x][y]->fCost();
+        if (a >= 100)
+          std::cout << a << "  ";
+        else if (a >= 10)
+          std::cout << a << "   ";
+        else
+          std::cout << a << "    ";
+      } 
+
+    }
+  }
+      std::cout << "\n\n";
+
 }

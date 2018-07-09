@@ -58,6 +58,8 @@ public:
 
   std::vector<Node*> getNeighbouringNodes(Node* node);
 
+  void printNodeValues(Node* startPos, Node* targetPos);
+
 };
 
 #endif

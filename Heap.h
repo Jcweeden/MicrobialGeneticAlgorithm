@@ -5,6 +5,9 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <algorithm>
+
 
 
 class IHeapItem;
@@ -43,6 +46,11 @@ public:
   void sortDown(Node* item);
 
   void clean();
+
+  void print();
+
+  void printer (std::vector<Node*> const & tree, unsigned index, unsigned mlength);
+  void print_tree (std::vector<Node*> & tree);
 };
 
 

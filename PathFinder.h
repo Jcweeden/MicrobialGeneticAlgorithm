@@ -27,7 +27,7 @@ public:
 
   PathFinder(/*Grid* p_grid*/);
   
-  void findPath(Vector2D startPosition, Vector2D targetPosition);
+  bool findPath(Vector2D startPosition, Vector2D targetPosition);
 
   int calcManhattanDistance(Node* nodeA, Node* nodeB);
 
