@@ -82,32 +82,50 @@ void Microbe::update()
         moveTowards(pathFinder.pathway.front()->getNodeCentralPosition());
       }
             
-      //and if in contact with partner
+      //and if in contact with partner reproduce - run genetic algorithm
       if (GameObject::checkForCollisionWithCircle(
               TheEnvironment::Instance()->microbes[nearestPartnerIndex]))
       {
-        //reproduce - genetic algorithm
-
-        //check fitnesses of this microbe and of partner
+        //get fitnesses of this microbe and of partner
         unsigned thisMicrobeFitness = mga.getFitness();
         unsigned partnerFitness = TheEnvironment::Instance()->microbes[nearestPartnerIndex]->mga.getFitness();
 
-        //if this is the stronger microbe
+        //std::cout<< "thisMicrobeFitness: " << thisMicrobeFitness << " partnerFitness: " << partnerFitness << "\n";
+
+                                                                                                             /*
+        if (thisMicrobeFitness > partnerFitness)
+        {
+          std:: cout << "stronger than partner\n";
+        }
+        else if (thisMicrobeFitness == partnerFitness)
+        {
+          std:: cout << "same as partner\n";
+        }
+        else if (thisMicrobeFitness < partnerFitness)
+        {
+          std:: cout << "weaker than partner\n";          
+        }
+                                                                                                             */                                   
+                                               
+        //if this is the stronger microbe, or both microbe's have same fitness
         if (thisMicrobeFitness > partnerFitness || thisMicrobeFitness == partnerFitness)
         {
           //produce a child from this microbe's genes
           produceChild(TheEnvironment::Instance()->microbes[nearestPartnerIndex]);
 
           //remove child from center of microbe, increment childrenProduced counter
-          completedReproduction();
-
+          completedReproduction();          
+          
           //kill the partner
           TheEnvironment::Instance()->microbes[nearestPartnerIndex]->deathFromReproduction();
         }
-        else
+        else //partner is the stronger microbe
         {
+          //spawn a child from the partner
           TheEnvironment::Instance()->microbes[nearestPartnerIndex]->produceChild(this);
           TheEnvironment::Instance()->microbes[nearestPartnerIndex]->completedReproduction();
+
+          //and kill off this microbe
           deathFromReproduction();
         }
       }
@@ -289,7 +307,7 @@ int Microbe::locateNearestReproductivePartner()
 void Microbe::consumedFoodSource()
 {
   //increase size of microbe
-  GameObject::width += ((startingRadius/foodRequiredToMate)*1.1f);//0.01f;
+  GameObject::width += ((startingRadius/foodRequiredToMate)*1.1f) * 2;
 
   //decrease speed of microbe up until 10% of original speed
   if (speedMultiplier > 0.1f)
@@ -301,12 +319,10 @@ void Microbe::consumedFoodSource()
   //increase mass of microbe
   
   //add value to total food consumption towards next reproduction
-  foodEaten++;
+  foodEaten += 2;
   
   //increase child draw size
-  childRadius +=  (startingRadius/foodRequiredToMate);
-
-  //std::cout << foodEaten << " / " << foodRequiredToMate<< "\n";
+  childRadius +=  (startingRadius/foodRequiredToMate) * 2;
 
   //if large enough to reproduce, is handled in update()
 }
@@ -366,7 +382,7 @@ void Microbe::produceChild(const Microbe* losingParent)
 
   float dampingVariation =  -(defaultDampingVal/10) + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/((defaultDampingVal/10)-(-(defaultDampingVal/10)))));
 
-  //set to the position of the spawning parent
+  //set child to the position of the spawning parent
   childMicrobe->setPosition(position);
   
   childMicrobe->setVelocity(0,0);
@@ -374,7 +390,7 @@ void Microbe::produceChild(const Microbe* losingParent)
   childMicrobe->setDamping(0.6f + dampingVariation);
   childMicrobe->setAcceleration(0.0f, 0.0f); //no gravity
 
-  //set to retain the same colours as the parent
+  //set child to retain the same colours as the parent
   childMicrobe->colourR = colourR;
   childMicrobe->colourG = colourG;
   childMicrobe->colourB = colourB;
@@ -382,15 +398,24 @@ void Microbe::produceChild(const Microbe* losingParent)
 
   childMicrobe->pathFinder.setGrid(&TheEnvironment::Instance()->grid);
 
-  //initially set genes to those of the losing parent
+  //initially set genes of child to those of the losing parent
+  for (size_t i = 0; i < losingParent->mga.genotypes.size(); i++)
+  {
+    childMicrobe->mga.genotypes[i] = losingParent->mga.genotypes[i];
+  }
   
-  //copy one correct gene over one incorrect gene
+  //attempt to copy one correct gene over one incorrect gene
   size_t randomGeneIndex;
   bool foundGeneToOverwrite = false;
+  std::vector<unsigned> genesToAttempt = {0,1,2,3};
+
+  //if has a correct gene where the child has an incorrect gene
   
   do {
-    //select a random gene
-    randomGeneIndex = rand() % 4;
+    //randomly select a previously unchecked gene index
+    unsigned randIndex = rand() % genesToAttempt.size();
+    randomGeneIndex = genesToAttempt[randIndex];
+    genesToAttempt.erase(genesToAttempt.begin() + randIndex);
     
     //if the parent gene is correct
     if (mga.isGenotypeCorrect(mga.genotypes[randomGeneIndex]))
@@ -399,19 +424,25 @@ void Microbe::produceChild(const Microbe* losingParent)
       if (!childMicrobe->mga.isGenotypeCorrect(mga.genotypes[randomGeneIndex]))
       {
         //we have found a gene to overwrite
+        std::cout << "found gene to overwrite\n";
         foundGeneToOverwrite = true;
       }
     }
-  } while (foundGeneToOverwrite == false);
+  } while (foundGeneToOverwrite == false && genesToAttempt.size() > 0);
 
   //overwrite the incorrect child gene with a correct parental gene
-  childMicrobe->mga.setGenotype(randomGeneIndex, mga.genotypes[randomGeneIndex]);
+  if (foundGeneToOverwrite)
+    childMicrobe->mga.setGenotype(randomGeneIndex, mga.genotypes[randomGeneIndex]);
+
   
   //and with 50% probability mutate a random gene
   if (rand() % 2 == 1)
   {
+    std::cout << "mutated random gene\n";
     childMicrobe->mga.mutateGenotype();
   }
+
+  std:: cout << "child fitness: " << childMicrobe->mga.getFitness() << "\n\n\n";
   
   //add to the list of microbes
   TheEnvironment::Instance()->microbes.push_back(childMicrobe);

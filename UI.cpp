@@ -174,8 +174,8 @@ void UI::draw()
   if (microbeIndex == -1) {
     boxRGBA(TheGame::Instance()->getRenderer(),
             0, TheGame::Instance()->getWindowHeight(),
-            TheGame::Instance()->getWindowWidth()/12,
-            TheGame::Instance()->getWindowHeight() + TheGame::Instance()->getWindowWidth()/12,
+            TheGame::Instance()->getWindowWidth()/12-1,
+            TheGame::Instance()->getWindowHeight() + TheGame::Instance()->getWindowWidth()/12-1,
             102, 102, 102, 255);
 
     //set microbe number to -, as none have been selected
@@ -189,8 +189,8 @@ void UI::draw()
   {
     boxRGBA(TheGame::Instance()->getRenderer(),
             0, TheGame::Instance()->getWindowHeight(),
-            TheGame::Instance()->getWindowWidth()/12,
-            TheGame::Instance()->getWindowHeight() + TheGame::Instance()->getWindowWidth()/12,
+            TheGame::Instance()->getWindowWidth()/12-1,
+            TheGame::Instance()->getWindowHeight() + TheGame::Instance()->getWindowWidth()/12-1,
             TheEnvironment::Instance()->microbes[microbeIndex]->colourR,
             TheEnvironment::Instance()->microbes[microbeIndex]->colourG,
             TheEnvironment::Instance()->microbes[microbeIndex]->colourB,
@@ -217,77 +217,49 @@ void UI::draw()
            0, 0, 0, 255);
 
   //GENES
-
+  //if no microbe is selected draw boxes in grey
   if (microbeIndex == -1) {
-    boxRGBA(TheGame::Instance()->getRenderer(),
-            290, 750,
-            329, 789,
-            102, 102, 102, 255);
+    boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 328, 788, 102, 102, 102, 255);
 
+    boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 385, 788, 102, 102, 102, 255);
 
-    boxRGBA(TheGame::Instance()->getRenderer(),
-            347, 750,
-            386, 789,
-            102, 102, 102, 255);
+    boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 442, 788, 102, 102, 102, 255);
 
-
-    boxRGBA(TheGame::Instance()->getRenderer(),
-            404, 750,
-            443, 789,
-            102, 102, 102, 255);
-
-
-    boxRGBA(TheGame::Instance()->getRenderer(),
-            461, 750,
-            500, 789,
-            102, 102, 102, 255);
+    boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 499, 788, 102, 102, 102, 255);
   }
   else //a microbe is selected, so draw boxes in either green or red depending on whether the gene is correct
   {
     if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(0))
-      boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 328, 789, 0, 255, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 328, 788, 0, 255, 0, 255);
     else
-      boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 329, 789, 255, 0, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 290, 750, 328, 788, 255, 0, 0, 255);
 
     if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(1))
-      boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 385, 789, 0, 255, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 385, 788, 0, 255, 0, 255);
     else
-      boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 386, 789, 255, 0, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 347, 750, 385, 788, 255, 0, 0, 255);
 
     if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(2))
-      boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 442, 789, 0, 255, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 442, 788, 0, 255, 0, 255);
     else
-      boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 443, 789, 255, 0, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 404, 750, 442, 788, 255, 0, 0, 255);
                 
     if (TheEnvironment::Instance()->microbes[microbeIndex]->mga.isGenotypeCorrect(3))
-      boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 499, 789, 0, 255, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 499, 788, 0, 255, 0, 255);
     else
-      boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 500, 789, 255, 0, 0, 255);
+      boxRGBA(TheGame::Instance()->getRenderer(), 461, 750, 499, 788, 255, 0, 0, 255);
   }
 
-  //gene box outlines
-  rectangleRGBA(TheGame::Instance()->getRenderer(),
-                290, 750,
-                329, 789,
-                0, 0, 0, 255);
-  rectangleRGBA(TheGame::Instance()->getRenderer(),
-                347, 750,
-                386, 789,
-                0, 0, 0, 255);
-  rectangleRGBA(TheGame::Instance()->getRenderer(),
-                404, 750,
-                443, 789,
-                0, 0, 0, 255);
-  rectangleRGBA(TheGame::Instance()->getRenderer(),
-                461, 750,
-                500, 789,
-                0, 0, 0, 255);
+  //gene box black outlines
+  rectangleRGBA(TheGame::Instance()->getRenderer(), 290, 750, 329, 789, 0, 0, 0, 255);
+  rectangleRGBA(TheGame::Instance()->getRenderer(), 347, 750, 386, 789, 0, 0, 0, 255);
+  rectangleRGBA(TheGame::Instance()->getRenderer(), 404, 750, 443, 789, 0, 0, 0, 255);
+  rectangleRGBA(TheGame::Instance()->getRenderer(), 461, 750, 500, 789, 0, 0, 0, 255);
   
   ///FOOD EATEN
-
   if (microbeIndex == -1) {
     boxRGBA(TheGame::Instance()->getRenderer(),
-            239, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
+            240, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 44,
             549, TheGame::Instance()->getWindowHeight() + (TheGame::Instance()->getUIHeight()/10)*2 + 63,
             102, 102, 102, 255);
   }

@@ -144,7 +144,6 @@ void Heap::sortDown(Node* item)
       
       //else parent has higher priority, exit loop
       else return;
-
       
     }
     //parent has no children

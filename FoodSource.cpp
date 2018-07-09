@@ -43,7 +43,7 @@ void FoodSource::clean()
 void FoodSource::consumedByMicrobe()
 {
   //reduce the size of the foodSource
-  GameObject::width -= 0.1f;
+  GameObject::width -= 0.22f;
 
   //if the foodSource has been entirely consumed
   if (GameObject::width <= 0.2f)
