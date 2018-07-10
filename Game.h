@@ -5,15 +5,11 @@
 #include <SDL2/SDL_image.h>
 #include "SDL2/SDL2_gfxPrimitives.h" 
 
-
 #include "InputHandler.h"
-//#include "Environment.h"
-//#include "GameObject.h"
 
 #include <iostream>
 #include <vector>
 
-//class GameObject;
 class Environment;
 class UI;
 
@@ -33,14 +29,9 @@ public:
   void quit();
 
   void loadSounds();
-  //void loadTextures();
   //void loadObjects();
-  //void initText();
-  //bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
 
   
-  //std::vector<GameObject*> m_gameObjects;
-
   SDL_Renderer* getRenderer() const { return m_pRenderer; }
 
   bool running() {return m_bRunning;}
@@ -73,26 +64,8 @@ private:
 
   UI* ui;
 
-  //GameStateManager* m_pGameStateManager;
-
   //start the game loop
   bool m_bRunning;
-
-
-  //text
-  /*
-  TTF_Font* fontTTF; //this opens a font style and sets a size
-  SDL_Color textColour = {40,104,19};  // this is the color in rgb format
-
-  
-  SDL_Surface* scoreMessage;
-  SDL_Texture* scoreText; 
-  SDL_Rect scoreRect;
-
-  SDL_Surface* highScoreMessage;
-  SDL_Texture* highScoreText;
-  SDL_Rect highScoreRect;
-  */
 
 };
 

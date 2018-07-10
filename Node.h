@@ -6,8 +6,6 @@
 
 #include <vector>
 
-//class Node;
-
 class Node {
 
 public:
@@ -25,13 +23,16 @@ public:
   //true if the node is not an obstactle, and is walkable
   bool traversable;
 
+  //distance from starting node to this one
   int gCost;
 
+  //distance from this node to target destination node
   int hCost;
 
-  //used when retracing back through the search path
+  //coords of node's parent in the pathfinding algorithm. Used when retracing back through the search path
   Vector2D parent;
 
+  //this node's position in the heap
   int heapIndex;
 
 public:
@@ -41,6 +42,8 @@ public:
 
   Node();
 
+  //the current system to hold nodes currently puts their position in the top left corner of the node
+  //this method returns the coords of the node's central position
   Vector2D getNodeCentralPosition() { return Vector2D(position.getX() + gridWidth/2,
                                                       position.getY() + gridHeight/2);}
 

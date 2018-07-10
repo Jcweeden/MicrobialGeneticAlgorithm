@@ -17,6 +17,9 @@ class GameObject;
 class Microbe : public GameObject {
 public:
 
+  //the unique number of the microbe within the simulation (for UI purposes only)
+  unsigned microbeID;
+  
   //used within UI. the number represents the action currently being undertaken (e.g. searching for food)
   //0 - seeking food
   //1 - waiting for accessible food source
@@ -33,11 +36,12 @@ public:
 
   //number of food consumed at this point in time - reset to 0 upon reproducing
   unsigned foodEaten;
+  
   //number of food that must be eaten before reproducing
   const unsigned foodRequiredToMate = 500;
 
-
-  unsigned nearestFoodSource;
+  //the index of the foodSource that the microbe is currently heading towards
+  int nearestFoodSource;
   
   //the number of children the microbe has produced
   unsigned childrenProduced;
@@ -56,7 +60,8 @@ public:
   float radiusToShrinkBy;
   
   PathFinder pathFinder;
-  //the pathfinding algorithm only runs every x amount of frames. This is the number of frames to elapse before finding a new path
+  
+  //the pathfinding algorithm only runs every x amount of frames. This is the number of frames to elapse before determining a new path
   int framesToNextPathfind;
 
   MicrobialGA mga;

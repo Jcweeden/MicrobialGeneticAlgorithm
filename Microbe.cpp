@@ -19,20 +19,21 @@ foodEaten(0), dying(false), speedMultiplier(10.0f), startingRadius(15.0f), child
 
 void Microbe::draw()
 {
-    //draw child
+  //draw child, should the microbe have one
   if ( childRadius > 0)
   {
     filledCircleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), childRadius, colourR, colourG, colourB, colourA);
     circleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), childRadius, 0, 0, 0, 255);
   }
 
-    //draw microbe itself
+  //draw microbe itself
   filledCircleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), width, colourR, colourG, colourB, colourA);
   circleRGBA(TheGame::Instance()->getRenderer(), getPositionX(), getPositionY(), width, 0, 0, 0, 255);
 }
 
 void Microbe::update()
 {
+  //resetVal is how many frames should elapse between each update of running the pathfinding algorithm
   int resetVal = 4;
 
     //if the shrinkage is due to reproduction
@@ -141,24 +142,25 @@ void Microbe::update()
 
         currentStatus = 0; //update UI to say we are seeking food
 
-        //put in NEARESTFOODSOURCE
-        //pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position);
-
       if (nearestFoodSource == -1)//no food source was found
       { //go to random location
         currentStatus = 1; //update UI to say we are waiting for an available food source
         pathFinder.findPath(position, generateRandomNearLocation()); //and generate a path to a random location
+        framesToNextPathfind = resetVal*4;  //reset number of frames countdown to find new path to higher val
       }
     }
 
-      //check if in contact with the currently tracked food source,
-    if (GameObject::checkForCollisionWithCircle(TheEnvironment::Instance()->foodSources[nearestFoodSource]))
-    {
-        //if so, run appropriate code to reduce size of food source
-      TheEnvironment::Instance()->foodSources[nearestFoodSource]->consumedByMicrobe();
-        //and increase size and consumuption counter for microbe
-      consumedFoodSource();
-    }
+      //if a food source available
+      if (nearestFoodSource != -1) {
+        //check if in contact with the currently tracked food source,
+        if (GameObject::checkForCollisionWithCircle(TheEnvironment::Instance()->foodSources[nearestFoodSource]))
+        {
+          //if so, run appropriate code to reduce size of food source
+          TheEnvironment::Instance()->foodSources[nearestFoodSource]->consumedByMicrobe();
+          //and increase size and consumuption counter for microbe
+          consumedFoodSource();
+        }
+      }
 
       //if there is a path 
     if (pathFinder.pathway.size() > 0) {
@@ -171,7 +173,7 @@ void Microbe::update()
       currentStatus = 4;
       if (framesToNextPathfind <= 0) {
         pathFinder.findPath(position, generateRandomNearLocation());
-        framesToNextPathfind = resetVal;
+        framesToNextPathfind = resetVal*4;
       }
 
       if (pathFinder.pathway.size() > 0) {
@@ -208,27 +210,23 @@ void Microbe::update()
   //stores the index of the closest food source and returns it
   int Microbe::locateNearestFoodSource()
   {
-    //index of closest found foodsource
-    int nearestFoodSourceIndex = -1;
-    //distance to nearest found food source
-    //float nearestFoodSourceDistance = UINT_MAX;
-
-    //if there are currently foodsources
+    //if there are currently foodsources within the environment
     if (TheEnvironment::Instance()->foodSources.size() > 0) {
 
-      //vec to hold distances between microbe and all food sources. index in vector is index of foodSource
+      //init vec to hold distances between microbe and all food sources. index in vector is index of foodSource
       std::vector<float> distances (TheEnvironment::Instance()->foodSources.size(), UINT_MAX);
 
       //for each food source
       for (size_t i = 0; i < TheEnvironment::Instance()->foodSources.size(); i++)
       {
-        //calculate the distance between the food source and microbe
+        //store the distance between the food source and microbe
         distances[i] = position.calcDistance(TheEnvironment::Instance()->foodSources[i]->position);
       }
-
-      //set a limit on the number of food sources to check (required as A* is run for each one if they are not close)
+      
+    //set a limit on the number of food sources to check
+    //(required as A* is run for each one if they are not close)
       unsigned numFoodSourcesToCheck = 5;
-      if (numFoodSourcesToCheck > TheEnvironment::Instance()->foodSources.size()) numFoodSourcesToCheck = TheEnvironment::Instance()->foodSources.size();
+      if (numFoodSourcesToCheck > distances.size()) numFoodSourcesToCheck = distances.size();
 
       //for the number of food sources to check
       for (size_t i = 0; i < numFoodSourcesToCheck; i++)
@@ -242,22 +240,30 @@ void Microbe::update()
           if (distances[j] < distances[minDistanceIndex])
           {
           //save the index
-            nearestFoodSourceIndex = j; 
+            minDistanceIndex = j; 
           }   
         }
+        
         //check if there is a path from the microbe to the food source
-        if (pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[nearestFoodSource]->position))
-              return nearestFoodSourceIndex; //if there is a path, return index of closest found foodsource
+        if (pathFinder.findPath(position, TheEnvironment::Instance()->foodSources[minDistanceIndex]->position))
+        {
+          nearestFoodSource = minDistanceIndex;
+          return nearestFoodSource; //if there is a path, return index of closest found foodsource
+        }
         else
-           distances.erase (distances.begin()+minDistanceIndex); //else, remove from the list
+        {
+          distances.erase (distances.begin()+minDistanceIndex); //else, remove from the list
+        }
       } //and loop and try the next closest food source
 
       //if iterated numFoodSourcesToCheck times and none were found, return no foodSource found
-      return -1;
+      nearestFoodSource = -1;
+      return nearestFoodSource;
     }
-    else //no foodSources found, return -1
+    else //no foodSources found, return -1, no foodSource found
     {
-      return -1;
+      nearestFoodSource = -1;
+      return nearestFoodSource;
     }
   }
 
@@ -380,6 +386,8 @@ void Microbe::update()
 
     float dampingVariation =  -(defaultDampingVal/10) + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/((defaultDampingVal/10)-(-(defaultDampingVal/10)))));
 
+    childMicrobe->microbeID = TheEnvironment::Instance()->microbeCounter++;
+    
     //set child to the position of the spawning parent
     childMicrobe->setPosition(position);
     

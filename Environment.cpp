@@ -14,6 +14,7 @@ Environment* Environment::Instance()
 }
 
 Environment::Environment()
+    : microbeCounter(1)
 {}
 
 void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigned obstaclesCount,
@@ -35,20 +36,12 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
 
     obstacles.push_back(obstacle);
   }
-
-  ///TEST
-  obstacles[0]->position = Vector2D(250, 300);
-  obstacles[0]->width = 300;
-  obstacles[0]->height = 170;
-  ///TEST
-
   
   std::cout << "Env.setup() before grid = Grid\n";
 
   //init A* grid, runs setup and creates nodes in Grid constructor
   grid = Grid(gridSizeX, gridSizeY, nodeDiameter);
 
-  //pathFinder.setGrid(&grid);
   std::cout << "Env.setup() init grid = Grid\n";
 
   
@@ -56,7 +49,7 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
   for (size_t i = 0; i < microbeCount; i++)
   { 
     Microbe *microbe = new Microbe();
-
+    microbe->microbeID = microbeCounter++;
     
     //if and while the coords randomly selected put the microbe into untraversable terrain
     //randomise position again, and loop until the object is placed in traversable terrain
@@ -108,11 +101,7 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
 
 
 void Environment::draw()
-{
-  //std::cout << "Env.draw()\n";
-  //if selected, pass in the location of the selcected microbe
-  //grid.selectedObjectPosition = microbes[0]->position;
-  
+{  
   //if enabled, draw the A* traversal grid
   grid.drawGrid();
 
@@ -140,35 +129,6 @@ void Environment::update()
 {
   handleInput();
   grid.handleInput();
-
-
-  ///TEST
-
-
-  //checking for partner  
-  /*
-  microbes[0]->position = Vector2D(303,103);
-  microbes[0]->foodEaten = 500;
-
-  microbes[1]->position = Vector2D(303, 503);
-  microbes[1]->foodEaten = 500;
-
-  foodSources[0]->position = Vector2D(303, 503);
-  */
-  
-  //checking for food
-  /*
-  microbes[0]->position = Vector2D(303,103);
-  microbes[0]->foodEaten = 499;
-
-  microbes[1]->position = Vector2D(303, 503);
-  microbes[1]->foodEaten = 500;
-
-  foodSources[0]->position = Vector2D(303, 503);
-  */
-
-  ///TEST
-
   
   for (size_t i = 0; i < foodSources.size(); i++)
   {
@@ -196,7 +156,9 @@ void Environment::update()
         if (i < selectedMicrobeIndex) selectedMicrobeIndex--;
 
         //and is the microbe being deleted, then set the selected index to -1 (off)
-        if (selectedMicrobeIndex == i)  selectedMicrobeIndex = -1;
+        if (selectedMicrobeIndex == i)
+          selectedMicrobeIndex = -1;
+        
       }
     }
   }
@@ -214,9 +176,10 @@ void Environment::update()
   
   //if a microbe is selected, update the grid to so that the selected microbe's pathway can be drawn
   if (selectedMicrobeIndex != -1)
-  {
     grid.pathway = microbes[selectedMicrobeIndex]->pathFinder.pathway;
-  }
+  else //else clear the grid so that none is drawn
+    grid.pathway.clear();    
+  
 }
 
 void Environment::clean()
@@ -249,14 +212,16 @@ void Environment::clean()
 void Environment::handleInput()
 {
   //MOUSE
-  //spawn white coloured lighter shapes from left-click
   if (TheInputHandler::Instance()->getMouseButtonState(0))
   {
+    //get position of click
     Vector2D mousePos (TheInputHandler::Instance()->getMousePosition()->getX(),
                        TheInputHandler::Instance()->getMousePosition()->getY());
 
+    //check with each microbe if the click position was on that microbe
     for (size_t i = 0; i < microbes.size(); i++)
-    { 
+    {
+      //if it was, then make that microbe selected, and return
       if (microbes[i]->checkForCollisionWithPoint(&mousePos))
       {
         selectedMicrobeIndex = i;

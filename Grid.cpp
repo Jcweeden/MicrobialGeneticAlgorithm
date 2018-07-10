@@ -163,18 +163,13 @@ void Grid::drawGrid()
     }
     
 
-    //draw the node the selected object is in (if one is selected)
+    //draw the final destintion node of where the selected object is headed towards
     if(pathway.size() > 0) {
-      if (selectedObjectPosition.getX() >= 0 && selectedObjectPosition.getX() <= gridSize.getX() &&
-          selectedObjectPosition.getY() >= 0 && selectedObjectPosition.getY() <= gridSize.getY() )
-      {
-        Node* node = getNodeFromCoords(selectedObjectPosition);
-        boxRGBA (TheGame::Instance()->getRenderer(),
-                 node->position.getX(), node->position.getY(),
-                 node->position.getX() + nodeDiameter, node->position.getY() + nodeDiameter,
-                 0, 0, 0, 255);
+      boxRGBA (TheGame::Instance()->getRenderer(),
+               pathway[pathway.size()-1]->position.getX(), pathway[pathway.size()-1]->position.getY(),
+               pathway[pathway.size()-1]->position.getX() + nodeDiameter, pathway[pathway.size()-1]->position.getY() + nodeDiameter,
+               150, 150, 0, 255);
       
-      }
     }
   }
   

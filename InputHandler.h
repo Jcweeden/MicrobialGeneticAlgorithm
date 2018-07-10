@@ -63,7 +63,8 @@ public:
 
   bool keyReturnPressed,
       key1Pressed, key2Pressed, key3Pressed, key4Pressed,
-      keyGPressed, keyTPressed, keyPPressed;  
+      keyGPressed, keyTPressed, keyPPressed,
+      keySPressed, keyHPressed, keyRPressed;
 private:
 
   InputHandler();

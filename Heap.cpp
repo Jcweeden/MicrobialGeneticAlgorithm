@@ -2,10 +2,16 @@
 
 Heap::Heap()
 {
-  //init items
   itemsCount = 0;
 }
 
+void Heap::setHeapSize(int count)
+{
+  items.resize(count); //allocate space for the size of the grid
+}
+
+//resets the costs and heap index's for all nodes used in a pathfinder search
+//after running the heap will be ready for next pathfinding run.
 void Heap::clean()
 {
   
@@ -21,17 +27,18 @@ void Heap::clean()
 }
 
 void Heap::addItem(Node* item)
-{ 
+{
+  //set the item's heapIndex to reflect it's position
   item->heapIndex = itemsCount;
-  items[itemsCount] = item; //items.push_back(item);
+  //add to the heap
+  items[itemsCount] = item;
+  //run sortUp to order it into correct position
   sortUp(item);
 
   itemsCount++;
 }
 
 //remove first item from the heap and set final item in heap to its position
-//then sort down to rearrange heap into correct order
-//first item removed will have lowest fCost
 Node* Heap::removeFirstItem()
 {
   Node* firstItem = items[0];
@@ -42,7 +49,10 @@ Node* Heap::removeFirstItem()
   items[0] = items[itemsCount];
   items[0]->heapIndex = 0;
 
+  //then sortDown to rearrange new placed node into correct position
   sortDown(items[0]);
+
+  //return the removed item
   return firstItem;
 }
 
@@ -53,7 +63,7 @@ void Heap::swapItems(Node* itemA, Node* itemB)
   items[itemA->heapIndex] = itemB;
   items[itemB->heapIndex] = itemA;
 
-  //swap heapIndexs for items
+  //swap heapIndexs of items
   int tempIndex = itemA->heapIndex;
 
   itemA->heapIndex = itemB->heapIndex;
@@ -61,16 +71,11 @@ void Heap::swapItems(Node* itemA, Node* itemB)
 
 }
 
-void Heap::updateItem(Node* item)
-{
-  sortUp(item);
-}
-
 //check if node is in heap
 bool Heap::isInHeap(Node* item)
 {
   //check if item's heap index exists in the array
-  if (items[item->heapIndex]/*->heapIndex*/ == item/*->heapIndex*/) //DUBIOUS
+  if (items[item->heapIndex] == item)
       return true;
     else
       return false;
@@ -81,20 +86,20 @@ void Heap::sortUp(Node* item)
   //get parent index of node item
   int parentIndex = (item->heapIndex-1)/2;
 
-  //while still of a higher priority than the item's parent
+  //true while item's fCost is lower than the item's parent
   while (true)
   {
     Node* parentItem = items[parentIndex];
 
-    //if item has a higher priority (lower fCost) than parent
+    //if item has lower fCost than its parent
     if (item->fCost() < parentItem->fCost())
     {
-      //swap the item's position in the heap with its parents
+      //swap the item's position in the heap with its parent
       swapItems(item, parentItem);
     }
     else
     {
-      break; //no longer a higher priority than its parent
+      break; //no longer a higher priority than its parent, in correct position in heap
     }
       
     parentIndex = (item->heapIndex-1)/2;
@@ -105,49 +110,56 @@ void Heap::sortDown(Node* item)
 {
   while(true)
   {
-    //get index of parent's two children
+    //get index of parent item's two children
     int childIndexLeft = item->heapIndex * 2 + 1;
     int childIndexRight = item->heapIndex * 2 + 2;
 
-    //temp variable
-    int swapIndex = 0;
+    //temp variable to hold index of child with lowest fCost
+    int lowestfCostChildIndex = 0;
 
-    //if has at least one child
+    //if item has at least one child
     if (childIndexLeft < itemsCount)
     {
-      //get child index left
-      swapIndex = childIndexLeft;
+      //save child index left as current lowest fCost child
+      lowestfCostChildIndex = childIndexLeft;
 
       //if item has two children (child on right)
       if (childIndexRight < itemsCount)
       {
-        //if child on right has higher priority (lower fCost in min heap) than child on left
+        //if child on right has lower fCost than the saved index child on left
         if (items[childIndexRight]->fCost() < items[childIndexLeft]->fCost())
-        { //right child has higher priority
-          swapIndex = childIndexRight;
+        { //then get the index as the right child has lower fCost
+          lowestfCostChildIndex = childIndexRight;
         }
       }
-      //swap index is now equal to child with highest priority
+      //lowestfCostChildIndex is now equal to child with lowest fCost
       
-      //check if parent has lower priority than highest priority child
-      if (item->fCost() > items[swapIndex]->fCost()) 
+      //check if parent has higher fCost than child with lowest fCost
+      if (item->fCost() > items[lowestfCostChildIndex]->fCost()) 
       {
         //if so, then swap them
-        swapItems(item, items[swapIndex]);
+        swapItems(item, items[lowestfCostChildIndex]);
       }
       
-      //else parent has higher priority, exit loop
+      //else parent has higher priority, exit loop as heap is in order
       else return;   
     }
-    //parent has no children
+    //parent has no children, so is in correct position
     else return;
   }
 }
+
+
+
+//DEBUG - for printing out tree
+
 
 void Heap::print()
 {
   if (itemsCount > 0)
     print_tree(items);
+  else
+    std::cout << "Heap.print():: no items in tree to print";
 
     std::cout << "\n";
 }
@@ -161,8 +173,6 @@ std::string do_padding (unsigned index, unsigned mlength){
   }
   return padding;
 }
-
-
 
 void Heap::printer (std::vector<Node*> const & tree, unsigned index, unsigned mlength){
   auto last = itemsCount - 1 ;
@@ -182,7 +192,6 @@ void Heap::printer (std::vector<Node*> const & tree, unsigned index, unsigned ml
     }
   }
 }
-
 
 void Heap::print_tree (std::vector<Node*> & tree){
   unsigned mlength = 0;

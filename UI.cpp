@@ -4,7 +4,7 @@
 
 
 UI::UI() :
-    microbeIndex(0), foodEatenPercentage(0)
+    microbeIndex(0), foodEatenPercentage(0), displayStats(false), displayHelp(true)
 {
   initText();
 }
@@ -154,6 +154,110 @@ void UI::initText()
   gene3Rect.y = 755; // controls the rect's y coordinte
   gene3Rect.w = 23; // controls the width of the rect
   gene3Rect.h = 29; // controls the height of the rect
+
+  
+  //stats
+  statsLabelMessage = TTF_RenderText_Blended(fontTTF, "Stats", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  statsLabelText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), statsLabelMessage); 
+  statsLabelRect.x = 15;  //controls the rect's x coordinate 
+  statsLabelRect.y = 0; // controls the rect's y coordinte
+  statsLabelRect.w = 65; // controls the width of the rect
+  statsLabelRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  numMicrobesMessage = TTF_RenderText_Blended(fontTTF, "Max fitness achieved:", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  numMicrobesText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), numMicrobesMessage); 
+  numMicrobesRect.x = 10;  //controls the rect's x coordinate 
+  numMicrobesRect.y = 40; // controls the rect's y coordinte
+  numMicrobesRect.w = 195; // controls the width of the rect
+  numMicrobesRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  numMicrobesLabelMessage = TTF_RenderText_Blended(fontTTF, "false", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  numMicrobesLabelText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), numMicrobesLabelMessage); 
+  numMicrobesLabelRect.x = 10 + 195 + 10;  //controls the rect's x coordinate 
+  numMicrobesLabelRect.y = 40; // controls the rect's y coordinte
+  numMicrobesLabelRect.w = TheGame::Instance()->getWindowWidth()/15; // controls the width of the rect
+  numMicrobesLabelRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  avgFitnessLabelMessage = TTF_RenderText_Blended(fontTTF, "Average fitness:", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  avgFitnessLabelText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), avgFitnessLabelMessage); 
+  avgFitnessLabelRect.x = 10;  //controls the rect's x coordinate 
+  avgFitnessLabelRect.y = 70; // controls the rect's y coordinte
+  avgFitnessLabelRect.w = 150; // controls the width of the rect
+  avgFitnessLabelRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  avgFitnessMessage = TTF_RenderText_Blended(fontTTF, "1.0", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  avgFitnessText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), avgFitnessMessage); 
+  avgFitnessRect.x = 150 + 20;  //controls the rect's x coordinate 
+  avgFitnessRect.y = 70; // controls the rect's y coordinte
+  avgFitnessRect.w = TheGame::Instance()->getWindowWidth()/15-10; // controls the width of the rect
+  avgFitnessRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  
+  avgLifespanLabelMessage = TTF_RenderText_Blended(fontTTF, "Average lifetime:", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  avgLifespanLabelText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), avgLifespanLabelMessage); 
+  avgLifespanLabelRect.x = 10;  //controls the rect's x coordinate 
+  avgLifespanLabelRect.y = 100; // controls the rect's y coordinte
+  avgLifespanLabelRect.w = 160; // controls the width of the rect
+  avgLifespanLabelRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  avgLifespanMessage = TTF_RenderText_Blended(fontTTF, "00:00", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  avgLifespanText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), avgLifespanMessage); 
+  avgLifespanRect.x = 160 + 20;  //controls the rect's x coordinate 
+  avgLifespanRect.y = 100; // controls the rect's y coordinte
+  avgLifespanRect.w = 60; // controls the width of the rect
+  avgLifespanRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  //help
+  helpLabelMessage = TTF_RenderText_Blended(fontTTF, "Help", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  helpLabelText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), helpLabelMessage); 
+  helpLabelRect.x = 15;  //controls the rect's x coordinate 
+  helpLabelRect.y = 0; // controls the rect's y coordinte
+  helpLabelRect.w = 60; // controls the width of the rect
+  helpLabelRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  statsMessage = TTF_RenderText_Blended(fontTTF, "Stats", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  statsText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), statsMessage); 
+  statsRect.x = 10;  //controls the rect's x coordinate 
+  statsRect.y = 40; // controls the rect's y coordinte
+  statsRect.w = 50; // controls the width of the rect
+  statsRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  /*
+  helpMessage = TTF_RenderText_Blended(fontTTF, "Help", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  helpText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), helpMessage); 
+  helpRect.x = 10;  //controls the rect's x coordinate 
+  helpRect.y = 70; // controls the rect's y coordinte
+  helpRect.w = 45; // controls the width of the rect
+  helpRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+  */
+
+  gridMessage = TTF_RenderText_Blended(fontTTF, "Grid", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  gridText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gridMessage); 
+  gridRect.x = 10;  //controls the rect's x coordinate 
+  gridRect.y = 80; // controls the rect's y coordinte
+  gridRect.w = 45; // controls the width of the rect
+  gridRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  terrainMessage = TTF_RenderText_Blended(fontTTF, "Terrain", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  terrainText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), terrainMessage); 
+  terrainRect.x = 10;  //controls the rect's x coordinate 
+  terrainRect.y = 110; // controls the rect's y coordinte
+  terrainRect.w = 68; // controls the width of the rect
+  terrainRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  pathMessage = TTF_RenderText_Blended(fontTTF, "Path", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  pathText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), pathMessage); 
+  pathRect.x = 10;  //controls the rect's x coordinate 
+  pathRect.y = 140; // controls the rect's y coordinte
+  pathRect.w = 45; // controls the width of the rect
+  pathRect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
+
+  READMEMessage = TTF_RenderText_Blended(fontTTF, "README", textColour); // as TTF_RenderText_Blended could only be used on SDL_Surface then you have to create the surface first
+  READMEText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), READMEMessage); 
+  READMERect.x = 10;  //controls the rect's x coordinate 
+  READMERect.y = 180; // controls the rect's y coordinte
+  READMERect.w = 80; // controls the width of the rect
+  READMERect.h = (TheGame::Instance()->getUIHeight()/10)*2; // controls the height of the rect
 }
 
 void UI::draw()
@@ -197,7 +301,7 @@ void UI::draw()
             TheEnvironment::Instance()->microbes[microbeIndex]->colourA);
 
     //set microbe number
-    microbeNumberMessage = TTF_RenderText_Blended(fontTTF, std::to_string(microbeIndex+1).c_str(), textColour);
+    microbeNumberMessage = TTF_RenderText_Blended(fontTTF, std::to_string(TheEnvironment::Instance()->microbes[microbeIndex]->microbeID).c_str(), textColour);
     microbeNumberText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), microbeNumberMessage);
     SDL_RenderCopy(TheGame::Instance()->getRenderer(), microbeNumberText, NULL, &microbeNumberRect); 
     SDL_FreeSurface( microbeNumberMessage );
@@ -323,10 +427,115 @@ void UI::draw()
   SDL_RenderCopy(TheGame::Instance()->getRenderer(), gene1Text, NULL, &gene1Rect);
   SDL_RenderCopy(TheGame::Instance()->getRenderer(), gene2Text, NULL, &gene2Rect);
   SDL_RenderCopy(TheGame::Instance()->getRenderer(), gene3Text, NULL, &gene3Rect);
+
+  if (displayStats)
+  {
+    //stats box background
+    boxRGBA(TheGame::Instance()->getRenderer(),
+            0, 0,
+            270, 150,
+            229, 154, 157, 215);
+
+    //stats box background
+    rectangleRGBA(TheGame::Instance()->getRenderer(),
+            -1, -1,
+            271, 151,
+            0, 0, 0, 255);
+
+    //draw stats label text
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), statsLabelText, NULL, &statsLabelRect);
+
+    //underline S in stats
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             14, 33,
+             32, 33,
+             0, 0, 0, 255);
+    
+    //draw average population fitness text
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), avgFitnessText, NULL, &avgFitnessRect);
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), avgFitnessLabelText, NULL, &avgFitnessLabelRect);
+    
+    //draw average population fitness text
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), avgLifespanText, NULL, &avgLifespanRect);
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), avgLifespanLabelText, NULL, &avgLifespanLabelRect);
+    
+    //draw average population fitness text
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), numMicrobesText, NULL, &numMicrobesRect);
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), numMicrobesLabelText, NULL, &numMicrobesLabelRect);
+  }
+  else if (displayHelp)
+  {
+    //help box background
+    boxRGBA(TheGame::Instance()->getRenderer(),
+            0, 0,
+            100, 220,
+            229, 154, 157, 215);
+
+    //help box background
+    rectangleRGBA(TheGame::Instance()->getRenderer(),
+                  -1, -1,
+                  101, 221,
+                  0, 0, 0, 255);
+
+    //draw help label text
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), helpLabelText, NULL, &helpLabelRect);
+
+    //underline H in help
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             15, 33,
+             37, 33,
+             0, 0, 0, 255);
+
+    //draw text
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), statsText, NULL, &statsRect);
+    //underline s in stats
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             10, 73,
+             22, 73,
+             0, 0, 0, 255);
+    
+    /* SDL_RenderCopy(TheGame::Instance()->getRenderer(), helpText, NULL, &helpRect);
+    //underline h in help
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             10, 103,
+             26, 103,
+             0, 0, 0, 255);*/
+    
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), gridText, NULL, &gridRect);
+    //underline G in grid
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             10, 113,
+             28, 113,
+             0, 0, 0, 255);
+    
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), terrainText, NULL, &terrainRect);
+    //underline T in terrain
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             10, 143,
+             21, 143,
+             0, 0, 0, 255);
+    
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), pathText, NULL, &pathRect);
+    //underline P in path
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             10, 173,
+             23, 173,
+             0, 0, 0, 255);
+    
+    SDL_RenderCopy(TheGame::Instance()->getRenderer(), READMEText, NULL, &READMERect);
+    //underline R in README
+    lineRGBA(TheGame::Instance()->getRenderer(),
+             10, 213,
+             22, 213,
+             0, 0, 0, 255);
+  }
 }
 
 void UI::update()
-{  
+{
+  //check to see if stats have been enabled/disabled
+  handleInput();
+  
   //reset the selected microbe index
   microbeIndex = TheEnvironment::Instance()->selectedMicrobeIndex;
 
@@ -403,7 +612,7 @@ void UI::update()
         statusStr = "seeking food                     ";
         break;
       case 1:
-        statusStr = "waiting for available food       ";
+        statusStr = "waiting for accessible food      ";
         break;
       case 2:
         statusStr = "seeking partner                  ";
@@ -477,9 +686,170 @@ void UI::update()
     fitnessText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), fitnessMessage);
     SDL_FreeSurface( fitnessMessage );
   }
-  else
+  else //no microbe selected
   {
-    foodEatenPercentage = 0;
+    //if this variable has not already been set to -1 (no microbe selected)
+    if (foodEatenPercentage != -1)
+    {
+      //then it is necessary to refresh the UI to show no microbe has been selected
+
+      //diameter
+      if( widthText != NULL ) SDL_DestroyTexture( widthText );
+      widthMessage = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"").c_str(),
+                                            textColour);
+      widthText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), widthMessage);
+      SDL_FreeSurface( widthMessage );
+
+      //speed
+      if( speedText != NULL ) SDL_DestroyTexture( speedText );
+      speedMessage = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"").c_str(),
+                                            textColour);
+      speedText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), speedMessage);
+      SDL_FreeSurface( speedMessage );
+
+      //children
+      
+      if( childText != NULL ) SDL_DestroyTexture( childText );
+      childMessage = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"").c_str(),
+                                            textColour);
+      childText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), childMessage);
+      SDL_FreeSurface( childMessage );
+
+      //lifetime
+      if( lifetimeText != NULL ) SDL_DestroyTexture( lifetimeText );
+      lifetimeMessage = TTF_RenderText_Blended(fontTTF,
+                                               ((std::string)"").c_str(),
+                                               textColour);
+      lifetimeText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), lifetimeMessage);
+      SDL_FreeSurface( lifetimeMessage );
+
+
+      //status
+      if( statusText != NULL ) SDL_DestroyTexture( statusText );
+      std::string statusStr = "no microbe selected              ";
+         
+      if( statusText != NULL ) SDL_DestroyTexture( statusText );
+      statusMessage = TTF_RenderText_Blended(fontTTF,
+                                             statusStr.c_str(),
+                                             textColour);
+      statusText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), statusMessage);
+      SDL_FreeSurface( statusMessage );
+
+
+      //food %
+      if( foodText != NULL ) SDL_DestroyTexture( foodText );
+      foodMessage = TTF_RenderText_Blended(fontTTF,
+                                           ((std::string)" - %").c_str(),
+                                           textColour);
+      foodText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), foodMessage);
+      SDL_FreeSurface( foodMessage );
+
+
+      //fitness rating
+      if( fitnessText != NULL ) SDL_DestroyTexture( fitnessText );
+      fitnessMessage = TTF_RenderText_Blended(fontTTF,
+                                              ((std::string)" - ").c_str(),
+                                              textColour);
+      fitnessText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), fitnessMessage);
+      SDL_FreeSurface( fitnessMessage );
+      
+      //genes
+      if( gene0Text != NULL ) SDL_DestroyTexture( gene0Text );
+      gene0Message = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"-").c_str(),
+                                            textColour);
+      gene0Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene0Message);
+      SDL_FreeSurface( gene0Message );
+      
+      if( gene1Text != NULL ) SDL_DestroyTexture( gene1Text );
+      gene1Message = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"-").c_str(),
+                                            textColour);
+      gene1Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene1Message);
+      SDL_FreeSurface( gene1Message );
+      
+      if( gene2Text != NULL ) SDL_DestroyTexture( gene2Text );
+      gene2Message = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"-").c_str(),
+                                            textColour);
+      gene2Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene2Message);
+      SDL_FreeSurface( gene2Message );
+      
+      if( gene3Text != NULL ) SDL_DestroyTexture( gene3Text );
+      gene3Message = TTF_RenderText_Blended(fontTTF,
+                                            ((std::string)"-").c_str(),
+                                            textColour);
+      gene3Text = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), gene3Message);
+      SDL_FreeSurface( gene3Message );
+
+
+      //final reset
+      foodEatenPercentage = -1;
+    }
+  }
+
+  //if stats are enabled then update values
+  if (displayStats)
+  {
+    //avg fitness
+    unsigned fitnessTotal = 0;
+    for (size_t i = 0; i < TheEnvironment::Instance()->microbes.size(); i++)
+    {
+      fitnessTotal += TheEnvironment::Instance()->microbes[i]->mga.getFitness();
+    }
+
+    std::string fitnessAvg = std::to_string((float)fitnessTotal / TheEnvironment::Instance()->microbes.size());
+
+    if (fitnessAvg.length() > 3) 
+      fitnessAvg.resize(3);
+    else if (fitnessAvg.length() == 1)
+      fitnessAvg.append(".0");
+    
+    if( avgFitnessText != NULL ) SDL_DestroyTexture( avgFitnessText );
+    avgFitnessMessage = TTF_RenderText_Blended(fontTTF,
+                                               fitnessAvg.c_str(),
+                                               textColour);
+    avgFitnessText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), avgFitnessMessage);
+    SDL_FreeSurface( avgFitnessMessage );
+
+    //avg lifespan
+
+    unsigned lifespanTotal = 0;
+    for (size_t i = 0; i < TheEnvironment::Instance()->microbes.size(); i++)
+    {
+      lifespanTotal += (SDL_GetTicks() -  TheEnvironment::Instance()->microbes[i]->microbeSpawnTime)/1000;
+    }
+
+    lifespanTotal /= TheEnvironment::Instance()->microbes.size();
+
+    int avgMins = lifespanTotal / 60;
+    int avgSeconds = lifespanTotal - (avgMins * 60);
+  
+    std::string avgLifetime = std::to_string(avgMins);
+
+    if (avgMins < 10)
+    {
+      avgLifetime.insert(0, "0");
+    }
+    avgLifetime.append(":");
+    if (avgSeconds < 10)
+    {
+      avgLifetime.append("0");
+    }
+
+    avgLifetime.append(std::to_string(avgSeconds)); 
+    
+    
+    if( avgLifespanText != NULL ) SDL_DestroyTexture( avgLifespanText );
+    avgLifespanMessage = TTF_RenderText_Blended(fontTTF,
+                                               avgLifetime.c_str(),
+                                               textColour);
+    avgLifespanText = SDL_CreateTextureFromSurface(TheGame::Instance()->getRenderer(), avgLifespanMessage);
+    SDL_FreeSurface( avgLifespanMessage );
+    
   }
 }
 
@@ -505,6 +875,45 @@ void UI::clean()
   if( fitnessLabelText != NULL ) SDL_DestroyTexture( fitnessLabelText );
   if( fitnessText != NULL ) SDL_DestroyTexture( fitnessText );
 
+  //stats
+  if( statsLabelText != NULL ) SDL_DestroyTexture( statsLabelText );
+  if( avgLifespanText != NULL ) SDL_DestroyTexture( avgFitnessLabelText );
+  if( avgFitnessText != NULL ) SDL_DestroyTexture( avgFitnessText );
+  if( avgLifespanLabelText != NULL ) SDL_DestroyTexture( avgLifespanLabelText );
+  if( avgLifespanText != NULL ) SDL_DestroyTexture( avgLifespanText );
+  if( numMicrobesLabelText != NULL ) SDL_DestroyTexture( numMicrobesLabelText );
+  if( numMicrobesText != NULL ) SDL_DestroyTexture( numMicrobesText );
+
+  //help
+  if( helpLabelText != NULL ) SDL_DestroyTexture( helpLabelText );
+  if( statsText != NULL ) SDL_DestroyTexture( statsText );
+  if( gridText != NULL ) SDL_DestroyTexture( gridText );
+  if( terrainText != NULL ) SDL_DestroyTexture( terrainText );
+  if( pathText != NULL ) SDL_DestroyTexture( pathText );
+  if( READMEText != NULL ) SDL_DestroyTexture( READMEText );
+
   TTF_Quit();
 
+}
+
+void UI::handleInput()
+{
+  //BUTTON PRESSES
+  if (TheInputHandler::Instance()->keySPressed)
+  {
+    TheInputHandler::Instance()->keySPressed = false;
+    if (displayStats == false) { displayStats = true; displayHelp = false; }
+    else { displayStats = false; displayHelp = false; }
+  }
+  else if (TheInputHandler::Instance()->keyHPressed)
+  {
+    TheInputHandler::Instance()->keyHPressed = false;
+    if (displayHelp == false) { displayHelp = true; displayStats = false; }
+    else { displayStats = false; displayHelp = false; }
+  }
+  else if (TheInputHandler::Instance()->keyRPressed)
+  {
+    TheInputHandler::Instance()->keyRPressed = false;
+    //TODO: open webpage
+  } 
 }

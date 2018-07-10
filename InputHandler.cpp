@@ -10,7 +10,8 @@ InputHandler::InputHandler()
 {
   isHoldingObject = false;
   keyReturnPressed = key1Pressed = key2Pressed = key3Pressed = key4Pressed =
-      keyGPressed = keyTPressed = keyPPressed =
+      keyGPressed = keyTPressed = keyPPressed = keySPressed = keyHPressed =
+      keyRPressed =
       false;
 
   
@@ -59,31 +60,11 @@ void InputHandler::update()
         m_mouseButtonStates[LEFT] = true;
         isMouseButtonPressed = true;
       }
-      /*if (event.button.button == SDL_BUTTON_MIDDLE)
-      {
-        m_mouseButtonStates[MIDDLE] = true;
-      }*/
       if (event.button.button == SDL_BUTTON_RIGHT)
       {
         m_mouseButtonStates[RIGHT] = true;
         isMouseButtonPressed = true;
       }
-    }
-    if (event.type == SDL_MOUSEBUTTONUP)
-    {
-      if (event.button.button == SDL_BUTTON_LEFT)
-      {
-        //m_mouseButtonStates[LEFT] = false;
-        // isMouseButtonPressed = false;        
-      }/*
-      if (event.button.button == SDL_BUTTON_MIDDLE)
-      {
-        m_mouseButtonStates[MIDDLE] = false;
-      }
-      if (event.button.button == SDL_BUTTON_RIGHT)
-      {
-        m_mouseButtonStates[RIGHT] = false;
-      }*/
     }
 
     //MOUSE MOTION
@@ -120,10 +101,17 @@ void InputHandler::update()
           keyTPressed = true;
           break;
         case SDLK_p:
-          keyPPressed = true;          
-                  
+          keyPPressed = true;
           break;
-      
+        case SDLK_s:
+          keySPressed = true;  
+          break;
+        case SDLK_h:
+          keyHPressed = true;
+          break;
+        case SDLK_r:
+          keyRPressed = true;
+          break;
       }
     }
   }

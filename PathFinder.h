@@ -16,25 +16,35 @@ class PathFinder {
 
 public:
 
+  //pointer to the grid used in pathfinding
   Grid* grid;
 
   //holds the current set of Nodes that forms the path of the selected Microbe
   std::vector<Node*> pathway;
 
+  //min heap to hold the grid nodes used in pathfinding
   Heap heap;
 
 public:
 
-  PathFinder(/*Grid* p_grid*/);
+  //constructor
+  PathFinder();
+
+  //setter - sets grid that will be used in findPath()
+  void setGrid(Grid* p_grid);
   
+  //undertakes A* pathfinding to traverse the grid from startPosition to targetPosition
+  //return true if a path was found
   bool findPath(Vector2D startPosition, Vector2D targetPosition);
 
-  int calcManhattanDistance(Node* nodeA, Node* nodeB);
+  //calculate a distance heuristic (movement cost) between two nodes in the grid
+  int calcMovementCost(Node* nodeA, Node* nodeB);
 
+  //starting from the target node a vector has added the end node, and then parent of each node,
+  //retracing the shortest path back to the start position. 
   void retracePath(Node* start, Node* end);
 
-  void setGrid(Grid* p_grid);
-
+  //simply clears the pathway vector
   void clean();
 };
 

@@ -24,7 +24,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 {
   int flags = 0;
 
-  if (fullscreen) {//if method parameter = true then make variable in line below
+  if (fullscreen) {
     flags = SDL_WINDOW_SHOWN;
   }
   
@@ -70,25 +70,18 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    UIHeight = 200;
    frameTime = 0;
 
+   
    srand (time(NULL));
-   // env = new Environment(10,10);
 
    env = TheEnvironment::Instance();
-   env->setup(2,40,20, getWindowHeight(), getWindowWidth(), 25);
+   env->setup(10,40,15, getWindowHeight(), getWindowWidth(), 25);
    std::cout << "Game.init() - env->setup() complete\n";
 
    ui = new UI();
    std::cout << "Game.init() - ui->setup() complete\n";
    /*
-   initText();
    loadSounds();
    */
-   
-   //  m_pGameStateManager = new GameStateManager();
-   
-   //start on MenuState
-   //m_pGameStateManager->changeState(new MenuState());
-   
    
    return true;
 }

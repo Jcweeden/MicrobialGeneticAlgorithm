@@ -38,12 +38,12 @@ public:
   
   //grid that holds the terrain for A* traversal of microbes
   Grid grid;
-
-  //
-  PathFinder pathFinder;
-
+  
   //the index of the selected microbe whose path is drawn
   int selectedMicrobeIndex;
+
+  //microbe counter
+  unsigned microbeCounter;
   
 public:
   //create singleton instance
@@ -60,6 +60,7 @@ public:
 
   void clean();
 
+  //check the position of mouse clicks, and if a microbe is clicked then set it as selected
   void handleInput();
 };
 

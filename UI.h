@@ -6,10 +6,7 @@
 
 #include "GameObject.h"
 #include "Game.h"
-/*#include "Microbe.h"
-  #include "FoodSource.h"*/
-//#include "Environment.h"
-
+#include "InputHandler.h"
 
 #include <iostream>
 #include <vector>
@@ -20,12 +17,15 @@ class UI
 {
 public:
 
+  bool displayStats;
+  bool displayHelp;
+  
 int microbeIndex;
 int foodEatenPercentage;
 
  //text
   TTF_Font* fontTTF; //this opens a font style and sets a size
-  SDL_Color textColour = {0,0,0};  // this is the color in rgb format
+  SDL_Color textColour = {0,0,0};  //color of the font in rgb format
 
   
   SDL_Surface* microbeNumberMessage;
@@ -104,17 +104,74 @@ int foodEatenPercentage;
   SDL_Texture* gene3Text;
   SDL_Rect gene3Rect;
 
+  //stats text
+  SDL_Surface* statsLabelMessage;
+  SDL_Texture* statsLabelText;
+  SDL_Rect statsLabelRect;
 
-public:
-  UI();
+  SDL_Surface* numMicrobesMessage;
+  SDL_Texture* numMicrobesText;
+  SDL_Rect numMicrobesRect;
   
-  void draw();
+  SDL_Surface* numMicrobesLabelMessage;
+  SDL_Texture* numMicrobesLabelText;
+  SDL_Rect numMicrobesLabelRect;
+  
+  SDL_Surface* avgFitnessMessage;
+  SDL_Texture* avgFitnessText;
+  SDL_Rect avgFitnessRect;
+  
+  SDL_Surface* avgFitnessLabelMessage;
+  SDL_Texture* avgFitnessLabelText;
+  SDL_Rect avgFitnessLabelRect;
 
-  void update();
+  SDL_Surface* avgLifespanMessage;
+  SDL_Texture* avgLifespanText;
+  SDL_Rect avgLifespanRect;
+  
+  SDL_Surface* avgLifespanLabelMessage;
+  SDL_Texture* avgLifespanLabelText;
+  SDL_Rect avgLifespanLabelRect;
+
+  //help text
+  SDL_Surface* helpLabelMessage;
+  SDL_Texture* helpLabelText;
+  SDL_Rect helpLabelRect;
+
+  SDL_Surface* statsMessage;
+  SDL_Texture* statsText;
+  SDL_Rect statsRect;
+
+  SDL_Surface* gridMessage;
+  SDL_Texture* gridText;
+  SDL_Rect gridRect;
+
+  SDL_Surface* terrainMessage;
+  SDL_Texture* terrainText;
+  SDL_Rect terrainRect;
+
+  SDL_Surface* pathMessage;
+  SDL_Texture* pathText;
+  SDL_Rect pathRect;
+
+  SDL_Surface* READMEMessage;
+  SDL_Texture* READMEText;
+  SDL_Rect READMERect;
+  
+public:
+UI();
+  
+void draw();
+
+void update();
 
 void initText();
 
 void clean();
+
+//checks for presses of S key, and displays stats if set to true
+void handleInput();
+
 };
 
 #endif
