@@ -42,8 +42,14 @@ public:
   //the index of the selected microbe whose path is drawn
   int selectedMicrobeIndex;
 
-  //microbe counter
+  //microbe counter - starts from one and is incremented to uniquely number each microbe (UI purposes only)
   unsigned microbeCounter;
+
+  //set to the number of reproductions before the first microbe reached max fitness (UI purposes only)
+  unsigned maxFitnessAchievedReproductions;
+
+  //holds the time at which the first microbe achieved max fitness (UI purposes only)
+  unsigned timeMaxFitnessAchieved;
   
 public:
   //create singleton instance

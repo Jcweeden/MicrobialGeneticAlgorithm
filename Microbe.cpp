@@ -449,6 +449,20 @@ void Microbe::update()
     }
 
     std:: cout << "child fitness: " << childMicrobe->mga.getFitness() << "\n\n\n";
+
+    //if max fitness has not been achieved before
+    if (TheEnvironment::Instance()->timeMaxFitnessAchieved == 0)
+    {
+      //and has been achieved now
+      if (childMicrobe->mga.getFitness() == 4)
+      {
+        //save the number of reproductions that took place before reaching max fitness
+        TheEnvironment::Instance()->maxFitnessAchievedReproductions =
+            TheEnvironment::Instance()->microbeCounter;
+        //and how long this took
+        TheEnvironment::Instance()->timeMaxFitnessAchieved = SDL_GetTicks();
+      }
+    }
     
     //add to the list of microbes
     TheEnvironment::Instance()->microbes.push_back(childMicrobe);

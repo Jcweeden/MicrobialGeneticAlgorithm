@@ -11,14 +11,13 @@
 #include <iostream>
 #include <vector>
 
-
+//libs for opening webpage for README
 #ifdef _WIN32
     #include <windows.h>
     #include <shellapi.h>
 #else
     #include <stdio.h>
     #include <stdlib.h>
-//#include <CoreServices/CoreServices.h>
 
 #endif
 
@@ -218,7 +217,11 @@ void initText();
 
 void clean();
 
-//checks for presses of S key, and displays stats if set to true
+//checks for keypresses of:
+// -H key, and displays help if set to true
+// -S key, and displays stats if set to true
+// -R key, and opens README webpage if set to true
+
 void handleInput();
 
 };

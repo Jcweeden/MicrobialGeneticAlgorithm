@@ -21,6 +21,8 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
                         unsigned gridSizeX, unsigned gridSizeY, unsigned nodeDiameter)
 {
 
+  maxFitnessAchievedReproductions = 0;
+  timeMaxFitnessAchieved = 0;
   selectedMicrobeIndex = 0;
   float defaultDampingVal = 0.6f;
 
