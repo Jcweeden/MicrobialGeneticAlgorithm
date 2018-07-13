@@ -14,9 +14,9 @@ class GameObject;
 class Obstacle : public GameObject {
 public:
 
-
+  //no fields
 public:
-  Obstacle(); //const
+  Obstacle(); //constructor
     
   void draw();
   void update();

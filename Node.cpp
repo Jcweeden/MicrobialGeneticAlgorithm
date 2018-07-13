@@ -22,30 +22,3 @@ Node::Node()
       hCost(0),
       heapIndex(0)
 {}
-
-//compare fCosts of two nodes
-//if the two nodes fCosts are equal then the node with the node's hCost will be compared
-//returns -1 if node is higher, 1 if lower
-int Node::compareTo(Node* nodeToCompare)
-{
-  if (fCost() < nodeToCompare->fCost())
-  {
-    return 1;
-  }
-  else if (fCost() > nodeToCompare->fCost())
-  {
-    return -1;
-  } 
-  else if (fCost() == nodeToCompare->fCost())
-  {
-    if (hCost < nodeToCompare->hCost)
-    {
-      return 1;
-    } else if (hCost > nodeToCompare->hCost)
-    {
-      return -1;
-    }
-  }
-
-  return 0; //else are equal for both fCost and hCost, return 0
-}

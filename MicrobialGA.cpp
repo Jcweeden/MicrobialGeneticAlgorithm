@@ -3,18 +3,16 @@
 MicrobialGA::MicrobialGA()
 {
 
-  //setup target array
-  targetGenotypes = {0,1,2,1};
+  //target array setup as const in .h
 
   //setup genes array
   genotypes = {0,0,0,0};
-
 }
 
 void MicrobialGA::assignNewRandomGenotypes()
 {
   for (size_t i = 0; i < 4; i++) {
-    setGenotype(i, rand() % 4);
+    setGenotype(i, rand() % 3);
   }
 }
 
@@ -43,8 +41,6 @@ unsigned MicrobialGA::getFitness() {
        return 'D';
      case 2:
        return 'E';
-     case 3:
-       return 'F';
      default:
        return false;
    }
@@ -59,5 +55,5 @@ bool MicrobialGA::isGenotypeCorrect(const size_t index)
 
 void MicrobialGA::mutateGenotype()
 {
-  genotypes[rand() % 4] = rand() % 4;
+  genotypes[rand() % 4] = rand() % 3;
 }

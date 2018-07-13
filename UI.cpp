@@ -2,7 +2,6 @@
 
 #include "Environment.h"
 
-
 UI::UI() :
     microbeIndex(0), foodEatenPercentage(0), displayStats(false), displayHelp(true), simulationStartTime(SDL_GetTicks()), lastStatsUpdateTime(0)
 {

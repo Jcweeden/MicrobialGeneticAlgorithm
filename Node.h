@@ -37,7 +37,7 @@ public:
 
 public:
 
-  //constructor
+  //constructors
   Node(Vector2D p_position, unsigned p_gridXIndex, unsigned p_gridYIndex, unsigned p_gridWidth, unsigned p_gridHeight);
 
   Node();
@@ -46,10 +46,8 @@ public:
   //this method returns the coords of the node's central position
   Vector2D getNodeCentralPosition() { return Vector2D(position.getX() + gridWidth/2,
                                                       position.getY() + gridHeight/2);}
-
-  int compareTo(Node* nodeToCompare);
   
-  //return the total score for the node
+  //return the total cost for the node
   int fCost() {return gCost + hCost;}
 };
 

@@ -20,7 +20,6 @@ Environment::Environment()
 void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigned obstaclesCount,
                         unsigned gridSizeX, unsigned gridSizeY, unsigned nodeDiameter)
 {
-
   maxFitnessAchievedReproductions = 0;
   timeMaxFitnessAchieved = 0;
   selectedMicrobeIndex = 0;
@@ -64,7 +63,7 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
     //added to defaultDampingVal to give variation in movement
     float dampingVariation =  -(defaultDampingVal/10) + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/((defaultDampingVal/10)-(-(defaultDampingVal/10)))));
         
-    microbe->setVelocity(0,0);
+    microbe->setVelocity(rand() % 4, rand() % 4);
     microbe->setMass(1.0f);
     microbe->setDamping(0.6f + dampingVariation);
     microbe->setAcceleration(0.0f, 0.0f); //no gravity
@@ -83,7 +82,6 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
   {
     FoodSource *foodSource = new FoodSource();
 
-
     //if and while the coords randomly selected put the foodSource into untraversable terrain
     //randomise position again, and loop until the object is placed in traversable terrain
     while (!(grid.getNodeFromCoords(foodSource->position)->traversable))
@@ -91,7 +89,7 @@ void Environment::setup(unsigned microbeCount, unsigned foodSourceCount, unsigne
       foodSource->setNewRandomisedPosition();  //generate a new location
     } 
     
-    foodSource->setVelocity( 0,0);
+    foodSource->setVelocity(0,0);
 
     foodSource->setDamping(0.0f);
     foodSource->setAcceleration(0.0f, 0.0f); //no gravity
@@ -159,8 +157,12 @@ void Environment::update()
 
         //and is the microbe being deleted, then set the selected index to -1 (off)
         if (selectedMicrobeIndex == i)
+        {
           selectedMicrobeIndex = -1;
-        
+
+          //and stop any further genes from this dead genotype being played
+          TheSoundMixer::Instance()->stopPlayingGenotypes();
+        }
       }
     }
   }
@@ -169,10 +171,8 @@ void Environment::update()
   {
     for (size_t i = 0; i < toDelete.size(); i++)
     {
-      //std::cout << "deleting microbe " << i << "/" << toDelete.size() <<"\n";
       delete microbes[toDelete[i]];
       microbes.erase(microbes.begin() + toDelete[i]);
-      //std::cout << "deleted microbe " << i << "/" << toDelete.size() <<"\n";
     }
   }
   
@@ -223,14 +223,18 @@ void Environment::handleInput()
     //check with each microbe if the click position was on that microbe
     for (size_t i = 0; i < microbes.size(); i++)
     {
-      //if it was, then make that microbe selected, and return
+      //if it was, then set that microbe as selected, play the genotype, and return
       if (microbes[i]->checkForCollisionWithPoint(&mousePos))
       {
         selectedMicrobeIndex = i;
+        microbes[selectedMicrobeIndex]->playGenotypeSong();
         return;
       }
     }
     //else, no microbe was selected - so select none
     selectedMicrobeIndex = -1;
+
+    //and should a genotype song be playing, then stop it
+    TheSoundMixer::Instance()->stopPlayingGenotypes();
   }
 }

@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp Game.cpp GameObject.cpp Circle.cpp InputHandler.cpp Environment.cpp Microbe.cpp FoodSource.cpp Obstacle.cpp Node.cpp Grid.cpp PathFinder.cpp Heap.cpp UI.cpp MicrobialGA.cpp
+OBJS = main.cpp Game.cpp GameObject.cpp Circle.cpp InputHandler.cpp Environment.cpp Microbe.cpp FoodSource.cpp Obstacle.cpp Node.cpp Grid.cpp PathFinder.cpp Heap.cpp UI.cpp MicrobialGA.cpp SoundMixer.cpp
 
 
 #CC specifies which compiler we're using

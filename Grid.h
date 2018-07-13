@@ -36,28 +36,42 @@ public:
   //holds the current set of Nodes that form the path of the selected Microbe
   std::vector<Node*> pathway;
 
-  //draw options
+  //draw options (drawn on-screen if true)
   bool drawGridEnabled, drawTerrainEnabled, drawPathEnabled;
 public:
 
+  //constructors
   Grid();
   Grid(unsigned p_gridLengthX, unsigned p_gridLengthY, float p_nodeDiameter);
-  
+
+  //creates and put the new nodes in the nodes array. calls setObstacleNodesToUntraversable()
   void setupGrid();
-  
+
+  //for each, if enabled, draws and displays the grid, traversable terrain, and current path of selected microbe
   void drawGrid();
 
+  //deletes nodes in grid
   void clean();
+
+  //handles button presses to enable drawing of grid, terrain, path
   void handleInput();
 
+  //resets gCost, fCost, heapIndex, and parent for each node
   void resetGrid();
+
+  //sets all nodes to traverable
   void resetTraverable();
+  
+  //return the node at the coordinates passed in
   Node* getNodeFromCoords(Vector2D worldPosition);
 
+  //check each obstacle against the grid, setting those nodes in contact with an obstacle to untraversable
   void setObstacleNodesToUntraversable();
 
+  //all traversable neighbours of the passed in node are returned, including those at diagonals
   std::vector<Node*> getNeighbouringNodes(Node* node);
 
+  //DEBUG - prints out representation of the grid, showing fCost for each node
   void printNodeValues(Node* startPos, Node* targetPos);
 
 };

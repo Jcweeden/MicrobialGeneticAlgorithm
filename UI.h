@@ -11,14 +11,13 @@
 #include <iostream>
 #include <vector>
 
-
+//libs for opening webpage for README
 #ifdef _WIN32
     #include <windows.h>
     #include <shellapi.h>
 #else
     #include <stdio.h>
     #include <stdlib.h>
-//#include <CoreServices/CoreServices.h>
 
 #endif
 
@@ -33,11 +32,14 @@ public:
 
   //the last time the stats were updated
   unsigned lastStatsUpdateTime;
-  
+
+  //if true, the respective menu is rendered on screen
   bool displayStats;
   bool displayHelp;
-  
+
+  //the index of the current microbe having it's stats displayed
   int microbeIndex;
+  //and the % of food it has eaten towards its next reproduction
   int foodEatenPercentage;
 
  //text
@@ -208,19 +210,25 @@ public:
   SDL_Rect READMERect;
   
 public:
-UI();
-  
-void draw();
+  UI(); //constructor
 
-void update();
+  //renders all text and backgrounds for UI
+  void draw();
 
-void initText();
+  //updates the values put into text and rendered in draw()
+  void update();
 
-void clean();
+  //inits TTF and loads font. inits all text rects, messages, text
+  void initText();
 
-//checks for presses of S key, and displays stats if set to true
-void handleInput();
+  //destroys textures for all Text, closes the font
+  void clean();
 
+  //checks for keypresses of:
+  // -H key, and displays help if set to true
+  // -S key, and displays stats if set to true
+  // -R key, and opens README webpage if set to true
+  void handleInput();
 };
 
 #endif

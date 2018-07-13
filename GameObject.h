@@ -8,8 +8,6 @@
 #include <iostream>
 #include <string>
 
-//class I_GameObject;
-
 class GameObject : public I_GameObject {
 
 public:

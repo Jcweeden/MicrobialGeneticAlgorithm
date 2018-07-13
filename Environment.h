@@ -10,6 +10,7 @@
 #include "Obstacle.h"
 #include "Grid.h"
 #include "PathFinder.h"
+#include "SoundMixer.h"
 
 #include <iostream>
 #include <string>
@@ -18,7 +19,6 @@
 class Microbe;
 class FoodSource;
 class Obstacle;
-//class Grid;
 
 class Environment {
 
@@ -57,6 +57,8 @@ public:
 
   Environment();
 
+  //instantiates microbes, foodSources and obstacles within the simulation and creates the grid that is used
+  //for A* path traversal
   void setup(unsigned microbeCount, unsigned foodSourceCount, unsigned obstaclesCount,
              unsigned gridSizeX, unsigned gridSizeY, unsigned nodeDiameter);
   

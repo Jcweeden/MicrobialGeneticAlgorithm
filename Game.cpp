@@ -73,22 +73,26 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
    
    srand (time(NULL));
 
+   //setup environment
    env = TheEnvironment::Instance();
    env->setup(10,40,15, getWindowHeight(), getWindowWidth(), 25);
    std::cout << "Game.init() - env->setup() complete\n";
 
+   //setup UI
    ui = new UI();
    std::cout << "Game.init() - ui->setup() complete\n";
-   /*
+
+   //load sounds into the soundMixer
    loadSounds();
-   */
    
    return true;
 }
 
 void Game::loadSounds()
 {
-  //TheSoundMixer::Instance()->load("assets/changeDirection.wav", "spaceBar", SOUND_SFX); 
+  TheSoundMixer::Instance()->load("Assets/Audio/synthc.wav", "0", SOUND_SFX); // c
+  TheSoundMixer::Instance()->load("Assets/Audio/synthd.wav", "1", SOUND_SFX); // d
+  TheSoundMixer::Instance()->load("Assets/Audio/synthe.wav", "2", SOUND_SFX); // ey
 }
 
 
@@ -109,6 +113,7 @@ void Game::update() {
   
   env->update();
   ui->update();
+  TheSoundMixer::Instance()->playQueuedGenotypes();
 }
 
 void Game::clean() {
