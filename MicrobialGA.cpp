@@ -31,20 +31,20 @@ unsigned MicrobialGA::getFitness() {
   return fitnessCounter;
 }
 
- char MicrobialGA::getGenotypeLetter(const size_t index)
- {
-   switch (getGenotype(index))
-   {
-     case 0:
-       return 'C';
-     case 1:
-       return 'D';
-     case 2:
-       return 'E';
-     default:
-       return false;
-   }
- }
+char MicrobialGA::getGenotypeLetter(const size_t index)
+{
+  switch (getGenotype(index))
+  {
+    case 0:
+      return 'C';
+    case 1:
+      return 'D';
+    case 2:
+      return 'E';
+    default:
+      return false;
+  }
+}
 
 
 bool MicrobialGA::isGenotypeCorrect(const size_t index)

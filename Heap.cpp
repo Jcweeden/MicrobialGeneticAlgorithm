@@ -110,7 +110,7 @@ void Heap::sortDown(Node* item)
 {
   while(true)
   {
-    //get index of parent item's two children
+    //get the heap index of parent item's two children
     int childIndexLeft = item->heapIndex * 2 + 1;
     int childIndexRight = item->heapIndex * 2 + 2;
 

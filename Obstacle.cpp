@@ -13,6 +13,11 @@ Obstacle::Obstacle() :
                )
    
 {
+  if (getPosition().getX() + width > TheGame::Instance()->getWindowWidth())
+    width = TheGame::Instance()->getWindowWidth() - getPosition().getX() - 1;
+
+  if (getPosition().getY() + height  > TheGame::Instance()->getWindowHeight())
+    height = TheGame::Instance()->getWindowHeight() - getPosition().getY() - 1;
 }
 
 
@@ -22,7 +27,7 @@ void Obstacle::draw()
   boxRGBA(TheGame::Instance()->getRenderer(),
             getPositionX(), getPositionY(),
             getPositionX() + width, getPositionY() + height,
-            colourR, colourG, colourB, colourA);
+            255, 0, 0, 200);
   
   //outline of box
   rectangleRGBA(TheGame::Instance()->getRenderer(),

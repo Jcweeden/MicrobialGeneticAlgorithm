@@ -8,9 +8,9 @@ Microbe::Microbe() :
         rand() % (TheGame::Instance()->getWindowHeight()-30) + 15,//y
         15.0f,//width (used as the radius)
         0,    //height (not used)
-        rand() % 225 + 30,//r
-        rand() % 225 + 30,//g
-        rand() % 225 + 30,//b
+        rand() % 150 + 105,//r
+        rand() % 150 + 105,//g
+        rand() % 150 + 105,//b
         rand() % 160 + 40 //a
                ),
     foodEaten(0), dying(false), speedMultiplier(10.0f), startingRadius(15.0f), childRadius(0.0f), radiusToShrinkBy(0.0f), framesToNextPathfind(0), childrenProduced(0), microbeSpawnTime(SDL_GetTicks()), currentStatus(0), nearestFoodSource(-1), nearestPartnerIndex(-1)
@@ -39,20 +39,30 @@ void Microbe::update()
   //if the shrinkage is due to reproduction
   if (radiusToShrinkBy > 0 )
   {
-    if (!dying) {
+    // if (!dying) {
       width -=  startingRadius/100;
       radiusToShrinkBy -= startingRadius/100;
-    }
+      //}
 
     //else, shrinkage is due to death
-    else {
+    /*else {
       width -=  startingRadius/100;
       radiusToShrinkBy -= startingRadius/100;
 
       //when shrinkage of the microbe reaches the edges of the child, reduce the size
       //of the child with the microbe itself
       if (width < childRadius) childRadius = width;
-    }
+      }*/
+  }
+
+  if (dying)
+  {
+    width -=  startingRadius/100;
+    //radiusToShrinkBy -= startingRadius/100;
+
+    //when shrinkage of the microbe reaches the edges of the child, reduce the size
+    //of the child with the microbe itself
+    if (width < childRadius) childRadius = width;
   }
 
   //if off the screen and not dying
@@ -396,7 +406,7 @@ void Microbe::deathFromReproduction()
   childrenProduced++;
     
   //set radiusToShrinkBy to size of microbe so over next frames will shrink entirely
-  radiusToShrinkBy = width;
+  //radiusToShrinkBy = width;
 
   //set dying to true to disable reproduction
   dying = true;
@@ -414,7 +424,7 @@ void Microbe::deathFromReproduction()
 //called from the surviving parent. a child is produced with the losingParent's genes, and with one correct gene from the surviving parent copied over. There is then a 50% chance of mutating a random gene to a random new value in the child
 void Microbe::produceChild(const Microbe* losingParent)
 {
-  Microbe* childMicrobe = new Microbe(); //potential memory leak
+  Microbe* childMicrobe = new Microbe();
 
   float defaultDampingVal = 0.6f;
 
@@ -447,14 +457,16 @@ void Microbe::produceChild(const Microbe* losingParent)
   //attempt to copy one correct gene over one incorrect gene
   size_t randomGeneIndex;
   bool foundGeneToOverwrite = false;
-  std::vector<unsigned> genesToAttempt = {0,1,2,3};
+  std::vector<unsigned> genesToAttempt = {0,1,2,3}; //vector storing indexs of genes not yet attempted to overwrite
 
   //if has a correct gene where the child has an incorrect gene
     
   do {
-    //randomly select a previously unchecked gene index
+    //randomly select a previously unchecked gene index from genesToAttempt
     unsigned randIndex = rand() % genesToAttempt.size();
     randomGeneIndex = genesToAttempt[randIndex];
+
+    //remove the gene so it will not be selected again
     genesToAttempt.erase(genesToAttempt.begin() + randIndex);
       
     //if the parent gene is correct

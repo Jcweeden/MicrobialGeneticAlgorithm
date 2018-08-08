@@ -75,7 +75,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
    //setup environment
    env = TheEnvironment::Instance();
-   env->setup(10,40,15, getWindowHeight(), getWindowWidth(), 25);
+   env->setup(20,80,20, getWindowHeight(), getWindowWidth(), 25);
    std::cout << "Game.init() - env->setup() complete\n";
 
    //setup UI
