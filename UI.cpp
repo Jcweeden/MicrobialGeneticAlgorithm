@@ -2,6 +2,11 @@
 
 #include "Environment.h"
 
+#ifdef _WIN32 //if on Windows
+  #include <windows.h>  
+  #include <tchar.h>
+#endif
+
 UI::UI() :
     microbeIndex(0), foodEatenPercentage(0), displayStats(false), displayHelp(true), simulationStartTime(SDL_GetTicks()), lastStatsUpdateTime(0)
 {
@@ -1126,7 +1131,7 @@ void UI::handleInput()
     std::string url = "https://www.joshuaweeden.com/microbial-genetic-algorithm";
     
 #ifdef _WIN32 //if on Windows
-    ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+    ShellExecute(NULL, "open", const_cast<char *>(url.c_str()), NULL, NULL, SW_SHOWNORMAL);
 #else //else developing on Mac
     system("open https://www.joshuaweeden.com/microbial-genetic-algorithm");       
 #endif
