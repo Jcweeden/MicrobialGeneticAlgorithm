@@ -1128,12 +1128,12 @@ void UI::handleInput()
     TheInputHandler::Instance()->keyRPressed = false;
 
     //url to open
-    std::string url = "https://www.joshuaweeden.com/microbial-genetic-algorithm";
+    std::string url = "https://www.joshuaweeden.co.uk/microbial-genetic-algorithm";
     
 #ifdef _WIN32 //if on Windows
     ShellExecute(NULL, "open", const_cast<char *>(url.c_str()), NULL, NULL, SW_SHOWNORMAL);
 #else //else developing on Mac
-    system("open https://www.joshuaweeden.com/microbial-genetic-algorithm");       
+    system("open https://www.joshuaweeden.co.uk/microbial-genetic-algorithm");       
 #endif
   } 
 }
